@@ -2,9 +2,15 @@ import os
 from flask import Flask, redirect
 app = Flask(__name__)
 
+redirect_base = "https://github.com/fxh32/partify/"
+
 @app.route("/")
 def hello():
-    return redirect("https://github.com/fxh32/partify/wiki")
+    return redirect(redirect_base + 'wiki')
+
+@app.route("/install")
+def install():
+    return redirect(redirect_base + 'wiki/install')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 80))
