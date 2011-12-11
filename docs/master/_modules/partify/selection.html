@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.selection &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.selection</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Contains the selection schemes that are used to negotiate the ordering of the global queue.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip_longest</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">and_</span>
+
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">PlayQueueEntry</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Vote</span>
+
+<div class="viewcode-block" id="get_selection_scheme"><a class="viewcode-back" href="../../modules/selection.html#partify.selection.get_selection_scheme">[docs]</a><span class="k">def</span> <span class="nf">get_selection_scheme</span><span class="p">(</span><span class="n">scheme</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the selection function for the scheme corresponding to ``scheme``.</span>
+
+<span class="sd">    :param scheme: the scheme to get the selection function of</span>
+<span class="sd">    :type scheme: string</span>
+<span class="sd">    :returns: the selection scheme</span>
+<span class="sd">    :rtype: callable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">selection_schemes</span><span class="p">[</span><span class="n">scheme</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="get_users_next_pqe_entry_after_playback_priority"><a class="viewcode-back" href="../../modules/selection.html#partify.selection.get_users_next_pqe_entry_after_playback_priority">[docs]</a><span class="k">def</span> <span class="nf">get_users_next_pqe_entry_after_playback_priority</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">playback_priority</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the user&#39;s next :class:`PlayQueueEntry` that has a playback priority higher than the given priority.</span>
+<span class="sd">    Useful for determining if a user&#39;s tracks are out-of-order w.r.t. the user&#39;s queue priorities.</span>
+
+<span class="sd">    :param user_id: The id of the :class:`User` to examine</span>
+<span class="sd">    :type user_id: :class:`User`</span>
+<span class="sd">    :param playback_priority: The priority after which to look for the user&#39;s next track</span>
+<span class="sd">    :type playback_priority: integer</span>
+<span class="sd">    :return: The next :class:`PlayQueueEntry` in the user&#39;s queue</span>
+<span class="sd">    :rtype: :class:`PlayQueueEntry`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span> <span class="o">&gt;</span> <span class="n">playback_priority</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_priority</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+</div>
+<span class="k">def</span> <span class="nf">_match_tracks_with_users</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">,</span> <span class="n">user_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a list of tracks in the database and a list of users in the order their tracks should be played,</span>
+<span class="sd">    orders the tracks in the MPD queue to reflect the user_list. Makes a maximum of one move each time it is run,</span>
+<span class="sd">    and relies on :func:`on_playlist_update` to get run again.</span>
+
+<span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
+<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    :param user_list: A list of users reflecting the order in which their tracks should be played</span>
+<span class="sd">    :type user_list: list of :class:`User`s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">track</span><span class="p">,</span><span class="n">user</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">db_tracks</span><span class="p">,</span> <span class="n">user_list</span><span class="p">):</span>
+        <span class="c"># Check to make sure the next track&#39;s user matches the user being looked at.</span>
+        <span class="c"># If it doesn&#39;t, reorder to move that user&#39;s track to this position</span>
+        <span class="c"># Otherwise, continue onward &#39;cause everything cool!</span>
+        <span class="k">if</span> <span class="n">track</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
+            <span class="c"># all that needs to happen in this situation is to check to see if the current track should be the user&#39;s next (i.e. that play order is respected)</span>
+            <span class="c"># if it&#39;s not, then shuffle some things around until it is.</span>
+            <span class="k">if</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">track</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_priority</span> <span class="o">&lt;</span> <span class="n">track</span><span class="o">.</span><span class="n">user_priority</span><span class="p">,</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span> <span class="o">&gt;</span> <span class="n">track</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># Get the track after the current playback priority with the minimum user_priority and make that the current track</span>
+                <span class="n">new_next_track</span> <span class="o">=</span> <span class="n">get_users_next_pqe_entry_after_playback_priority</span><span class="p">(</span><span class="n">track</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">track</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_next_track</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">mpd</span><span class="o">.</span><span class="n">moveid</span><span class="p">(</span><span class="n">new_next_track</span><span class="o">.</span><span class="n">mpd_id</span><span class="p">,</span> <span class="n">track</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Everything&#39;s cool!</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Uh-oh!</span>
+            <span class="c"># Something isn&#39;t round robin about this.</span>
+            <span class="c"># To resolve this, push the rest of the tracks back and move the user&#39;s lowest pqe after the current playback_priority to the current position.</span>
+            <span class="n">new_next_track</span> <span class="o">=</span> <span class="n">get_users_next_pqe_entry_after_playback_priority</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">track</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_next_track</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mpd</span><span class="o">.</span><span class="n">moveid</span><span class="p">(</span><span class="n">new_next_track</span><span class="o">.</span><span class="n">mpd_id</span><span class="p">,</span> <span class="n">track</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span>
+            <span class="k">break</span>
+
+<div class="viewcode-block" id="round_robin"><a class="viewcode-back" href="../../modules/selection.html#partify.selection.round_robin">[docs]</a><span class="k">def</span> <span class="nf">round_robin</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Organizes a round-robin arrangement of tracks in the global play queue. Generates a list of users in round-robin</span>
+<span class="sd">    order starting with the user playing the current track and proceeding in alphabetical order by username. Sends the user</span>
+<span class="sd">    list and ``db_tracks`` off to :func:`_match_tracks_with_users` to be reordered.</span>
+
+<span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
+<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># First, grab a list of all users that currently have PlayQueueEntrys (we can interpret this as active users)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">pqe</span><span class="o">.</span><span class="n">user</span> <span class="k">for</span> <span class="n">pqe</span> <span class="ow">in</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+    <span class="n">unique_users</span> <span class="o">=</span> <span class="n">users</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;anonymous&#39;</span><span class="p">))</span>
+    <span class="c"># Turn the sorted user list into a cycle for repeated iteration</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">users</span><span class="p">)</span>
+    <span class="n">current_user</span> <span class="o">=</span> <span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span><span class="o">.</span><span class="n">first</span><span class="p">())</span><span class="o">.</span><span class="n">user</span>
+
+    <span class="c"># Advance the user list to the current user</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">dropwhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">users</span><span class="p">)</span>
+
+    <span class="n">user_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">user_counts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">())</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">unique_users</span> <span class="p">)</span>
+
+    <span class="c"># generate a list of users to zip against the track list</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span> <span class="p">[</span><span class="n">user_count</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">user_count</span> <span class="ow">in</span> <span class="n">user_counts</span><span class="o">.</span><span class="n">itervalues</span><span class="p">()]</span> <span class="p">):</span>
+            <span class="k">break</span>
+        
+        <span class="k">if</span> <span class="n">user_counts</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">user_counts</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">user_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+    <span class="n">_match_tracks_with_users</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">,</span> <span class="n">user_list</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="first_come_first_served"><a class="viewcode-back" href="../../modules/selection.html#partify.selection.first_come_first_served">[docs]</a><span class="k">def</span> <span class="nf">first_come_first_served</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple first-come first-served ordering. Generates a list of users based on when they queued tracks</span>
+<span class="sd">    and then lets :func:`_match_tracks_with_users` do the legwork.</span>
+
+<span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
+<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">pqe</span><span class="o">.</span><span class="n">user</span> <span class="k">for</span> <span class="n">pqe</span> <span class="ow">in</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">time_added</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+
+    <span class="n">_match_tracks_with_users</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">,</span> <span class="n">user_list</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="first_come_first_served_with_voting"><a class="viewcode-back" href="../../modules/selection.html#partify.selection.first_come_first_served_with_voting">[docs]</a><span class="k">def</span> <span class="nf">first_come_first_served_with_voting</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;First-come first-served with voting. Sorts the :class:`PlayQueueEntry`s in the database and shuffles</span>
+<span class="sd">    tracks until their order matches the correct DB ordering.</span>
+
+<span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
+<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># TODO: replace this with a nice SQLAlchemy query</span>
+    <span class="k">def</span> <span class="nf">sort_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">votes_x</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">direction</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span><span class="o">==</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+        <span class="n">votes_y</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">direction</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span><span class="o">==</span><span class="n">y</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+        <span class="k">if</span> <span class="n">votes_x</span> <span class="o">==</span> <span class="n">votes_y</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">time_added</span> <span class="o">&lt;</span> <span class="n">y</span><span class="o">.</span><span class="n">time_added</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">time_added</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">time_added</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">votes_x</span> <span class="o">-</span> <span class="n">votes_y</span>
+
+    <span class="n">sorted_tracks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">db_tracks</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="nb">cmp</span><span class="o">=</span><span class="n">sort_fn</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">sorted_track</span><span class="p">,</span> <span class="n">db_track</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sorted_tracks</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="k">if</span> <span class="n">sorted_track</span><span class="o">.</span><span class="n">mpd_id</span> <span class="o">!=</span> <span class="n">db_track</span><span class="o">.</span><span class="n">mpd_id</span><span class="p">:</span>
+            <span class="n">mpd</span><span class="o">.</span><span class="n">moveid</span><span class="p">(</span><span class="n">sorted_track</span><span class="o">.</span><span class="n">mpd_id</span><span class="p">,</span> <span class="n">db_track</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span>
+            <span class="k">break</span>
+
+</div>
+<span class="n">selection_schemes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;ROUND_ROBIN&#39;</span><span class="p">:</span> <span class="n">round_robin</span><span class="p">,</span>
+    <span class="s">&#39;FCFS&#39;</span><span class="p">:</span> <span class="n">first_come_first_served</span><span class="p">,</span>
+    <span class="s">&#39;FCFS_VOTE&#39;</span><span class="p">:</span> <span class="n">first_come_first_served_with_voting</span>
+<span class="p">}</span>
+
+<span class="n">needs_voting</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;ROUND_ROBIN&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="s">&#39;FCFS&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="s">&#39;FCFS_VOTE&#39;</span><span class="p">:</span> <span class="bp">True</span>
+<span class="p">}</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

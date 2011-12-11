@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.decorators &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.decorators</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;A collection of decorators for common endpoint actions.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">flash</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">url_for</span>
+
+<span class="kn">from</span> <span class="nn">mpd</span> <span class="kn">import</span> <span class="n">MPDClient</span>
+<span class="kn">from</span> <span class="nn">ipc</span> <span class="kn">import</span> <span class="n">get_mpd_lock</span><span class="p">,</span> <span class="n">release_mpd_lock</span>
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">partify.priv</span> <span class="kn">import</span> <span class="n">user_has_privilege</span>
+
+<div class="viewcode-block" id="with_authentication"><a class="viewcode-back" href="../../modules/decorators.html#partify.decorators.with_authentication">[docs]</a><span class="k">def</span> <span class="nf">with_authentication</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A decorator that ensures that a user is logged in and redirects them to a login page if the user is not authenticated.</span>
+
+<span class="sd">    The way authentication is currently verified is simply by checking for the user key in session. This is certainly not the best means of </span>
+<span class="sd">    authentication but it will do for now. Security is not a high priority for this project since its intended use case is in a local scenario.</span>
+<span class="sd">    However, it would be great to have better security if time permits.&quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;user&#39;</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">&#39;login_form&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">wrapped</span>
+</div>
+<div class="viewcode-block" id="with_mpd"><a class="viewcode-back" href="../../modules/decorators.html#partify.decorators.with_mpd">[docs]</a><span class="k">def</span> <span class="nf">with_mpd</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A decorator that establishes an MPD connection Mopidy and passes it into the wrapped function.&quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;TESTING&#39;</span><span class="p">]:</span>
+            <span class="n">mpd_client</span> <span class="o">=</span> <span class="n">MPDClient</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">testing.mocks.mock_mpd_client</span> <span class="kn">import</span> <span class="n">MockMPDClient</span>
+            <span class="n">mpd_client</span> <span class="o">=</span> <span class="n">MockMPDClient</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mpd_client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;MPD_SERVER_HOSTNAME&#39;</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;MPD_SERVER_PORT&#39;</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># Do something sensible when you can&#39;t connect to the MPD server, like pass None in for mpd_client</span>
+            <span class="c"># maybe eventually just forward to the configuration page/no connection page</span>
+            <span class="n">mpd_client</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Could not connect to MPD server on host </span><span class="si">%r</span><span class="s">, port </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;MPD_SERVER_HOSTNAME&#39;</span><span class="p">],</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;MPD_SERVER_PORT&#39;</span><span class="p">]))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;MPD credentials incorrect&quot;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s">&quot;Crap.&quot;</span><span class="p">,</span> <span class="mi">500</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">return_value</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">mpd_client</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mpd_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mpd_client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">return_value</span>
+    <span class="k">return</span> <span class="n">wrapped</span>
+</div>
+<div class="viewcode-block" id="with_mpd_lock"><a class="viewcode-back" href="../../modules/decorators.html#partify.decorators.with_mpd_lock">[docs]</a><span class="k">def</span> <span class="nf">with_mpd_lock</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A decorator that ensures that no two functions that send commands to MPD happen simultaneously.&quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">get_mpd_lock</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">release_mpd_lock</span><span class="p">()</span>
+            <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>        
+            <span class="n">release_mpd_lock</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rv</span>
+    <span class="k">return</span> <span class="n">wrapped</span>
+</div>
+<div class="viewcode-block" id="with_privileges"><a class="viewcode-back" href="../../modules/decorators.html#partify.decorators.with_privileges">[docs]</a><span class="k">def</span> <span class="nf">with_privileges</span><span class="p">(</span><span class="n">privs</span><span class="p">,</span> <span class="n">fail_mode</span><span class="o">=</span><span class="s">&quot;json&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A decorator that restricts access to the decorated endpoint if the logged in user does not have sufficient privileges.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">current_user</span> <span class="o">=</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]</span>
+            <span class="n">missing_privs</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">privs</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">user_has_privilege</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">p</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_privs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fail_mode</span> <span class="o">==</span> <span class="s">&quot;redirect&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">&quot;player&quot;</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">fail_mode</span> <span class="o">==</span> <span class="s">&quot;json&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You are not authorized to view this page!&quot;</span><span class="p">),</span> <span class="mi">403</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;Not authorized.&quot;</span><span class="p">),</span> <span class="mi">403</span>
+        <span class="k">return</span> <span class="n">wrapped</span>
+    <span class="k">return</span> <span class="n">dec</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

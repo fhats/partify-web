@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Admin &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module Reference" href="index.html" />
+    <link rel="next" title="Configuration" href="config.html" />
+    <link rel="prev" title="Top-Level Functions" href="toplevel.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="toplevel.html" title="Top-Level Functions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="toplevel.html"
+                        title="previous chapter">Top-Level Functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="next chapter">Configuration</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/modules/admin.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-partify.admin">
+<span id="admin"></span><h1>Admin<a class="headerlink" href="#module-partify.admin" title="Permalink to this headline">¶</a></h1>
+<p>Contains functions and endpoints for administrative facilities.</p>
+<dl class="function">
+<dt id="partify.admin.admin_admin_update">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">admin_admin_update</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#admin_admin_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.admin_admin_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the administrative privileges of other users given the input from
+the form presented by <a class="reference internal" href="#partify.admin.admin_console" title="partify.admin.admin_console"><tt class="xref py py-func docutils literal"><span class="pre">admin_console()</span></tt></a>.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin/admin_admin_update</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.admin_console">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">admin_console</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#admin_console"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.admin_console" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the admin console.
+admin.html expects a list of forms for the admin_admin functions,
+a dict of user ids and names, a configuration form, the current user,
+and the privileges a user has.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.admin_playback_pause">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">admin_playback_pause</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#admin_playback_pause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.admin_playback_pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to tell Mopidy to pause, regardless of Mopidy&#8217;s current play state.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin/playback/pause</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.admin_playback_play">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">admin_playback_play</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#admin_playback_play"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.admin_playback_play" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to tell Mopidy to play, regardless of Mopidy&#8217;s current play state.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin/playback/play</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.admin_playback_skip">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">admin_playback_skip</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#admin_playback_skip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.admin_playback_skip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skips the current track.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin/playback/skip</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.admin_queue_clear">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">admin_queue_clear</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#admin_queue_clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.admin_queue_clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the global play queue.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin/queue/clear</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.configuration_update">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">configuration_update</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#configuration_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.configuration_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the configuration values provided by the configuration form
+presented by <a class="reference internal" href="#partify.admin.admin_console" title="partify.admin.admin_console"><tt class="xref py py-func docutils literal"><span class="pre">admin_console()</span></tt></a>.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/admin/config_update</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.create_admin_admin_form">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">create_admin_admin_form</tt><big>(</big><em>data=None</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#create_admin_admin_form"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.create_admin_admin_form" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of SingleUserAdminAdminForms - one for each user.
+This is useful for the Admin Admin section of the admin page, where
+one form per user is needed (due to the way WTForms does things).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.admin.make_admin_admin_form_object">
+<tt class="descclassname">partify.admin.</tt><tt class="descname">make_admin_admin_form_object</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="../_modules/partify/admin.html#make_admin_admin_form_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.admin.make_admin_admin_form_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information about the user for use with an AdminAdminForm.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="toplevel.html" title="Top-Level Functions"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

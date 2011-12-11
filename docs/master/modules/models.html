@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Models &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module Reference" href="index.html" />
+    <link rel="next" title="Player" href="player.html" />
+    <link rel="prev" title="IPC" href="ipc.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="player.html" title="Player"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ipc.html" title="IPC"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ipc.html"
+                        title="previous chapter">IPC</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="player.html"
+                        title="next chapter">Player</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/modules/models.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-partify.models">
+<span id="models"></span><h1>Models<a class="headerlink" href="#module-partify.models" title="Permalink to this headline">¶</a></h1>
+<p>Contains a bunch of SQLAlchemy Models for the data that Partify stores.</p>
+<dl class="class">
+<dt id="partify.models.ConfigurationField">
+<em class="property">class </em><tt class="descclassname">partify.models.</tt><tt class="descname">ConfigurationField</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/models.html#ConfigurationField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.models.ConfigurationField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a configuration field.</p>
+<ul class="simple">
+<li><strong>id</strong>: The <a class="reference internal" href="#partify.models.ConfigurationField" title="partify.models.ConfigurationField"><tt class="xref py py-class docutils literal"><span class="pre">ConfigurationField</span></tt></a>&#8216;s unique ID</li>
+<li><strong>field_name</strong>: The name of the configuration field</li>
+<li><strong>field_value</strong>: The value the configuration field should have.</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="partify.models.PlayHistoryEntry">
+<em class="property">class </em><tt class="descclassname">partify.models.</tt><tt class="descname">PlayHistoryEntry</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/models.html#PlayHistoryEntry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.models.PlayHistoryEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a log entry for a track that was played by a user. Used to generate statistics.
+These should stick around forever.</p>
+<ul class="simple">
+<li><strong>id</strong>: The <a class="reference internal" href="#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayHistoryEntry</span></tt></a>&#8216;s unique ID</li>
+<li><strong>track, track_id</strong>: The <a class="reference internal" href="#partify.models.Track" title="partify.models.Track"><tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt></a> that was played</li>
+<li><strong>user, user_id</strong>: The <a class="reference internal" href="#partify.models.User" title="partify.models.User"><tt class="xref py py-class docutils literal"><span class="pre">User</span></tt></a> that played the track</li>
+<li><strong>time_played</strong>: The datetime that the <a class="reference internal" href="#partify.models.Track" title="partify.models.Track"><tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt></a> started playing</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="partify.models.PlayQueueEntry">
+<em class="property">class </em><tt class="descclassname">partify.models.</tt><tt class="descname">PlayQueueEntry</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/models.html#PlayQueueEntry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.models.PlayQueueEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a playlist queue entry. These only live until the track they represent is played,
+then they are deleted.</p>
+<ul class="simple">
+<li><strong>id</strong>: The <a class="reference internal" href="#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a>&#8216;s unique ID</li>
+<li><strong>track, track_id</strong>: The track that is represented by this <a class="reference internal" href="#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a></li>
+<li><strong>user, user_id</strong>: The user that queued this track</li>
+<li><strong>mpd_id</strong>: The ID used by Mopidy internally for this queue entry</li>
+<li><strong>time_added</strong>: The datetime that this track was queued</li>
+<li><strong>user_priority</strong>: The priority of this track in the user&#8217;s queue</li>
+<li><strong>playback_priority</strong>: The playback priority in the global queue</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="partify.models.Track">
+<em class="property">class </em><tt class="descclassname">partify.models.</tt><tt class="descname">Track</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/models.html#Track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.models.Track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents track metadata. Used as a foreign key in <a class="reference internal" href="#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a> and <a class="reference internal" href="#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayHistoryEntry</span></tt></a>.
+These should stick around forever and aid in faster metadata retrieval.</p>
+<ul class="simple">
+<li><strong>id</strong>: The <a class="reference internal" href="#partify.models.Track" title="partify.models.Track"><tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt></a>&#8216;s unique ID.</li>
+<li><strong>title</strong>: The title of the track.</li>
+<li><strong>artist</strong>: The artist that performs the track.</li>
+<li><strong>album</strong>: The album the track is found on.</li>
+<li><strong>length</strong>: The length of the track in seconds.</li>
+<li><strong>date</strong>: The date the track was released.</li>
+<li><strong>spotify_url</strong>: The URL of the track in Spotify&#8217;s catalog</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="partify.models.User">
+<em class="property">class </em><tt class="descclassname">partify.models.</tt><tt class="descname">User</tt><big>(</big><em>name=None</em>, <em>username=None</em>, <em>password=None</em><big>)</big><a class="reference internal" href="../_modules/partify/models.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.models.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a <a class="reference internal" href="#partify.models.User" title="partify.models.User"><tt class="xref py py-class docutils literal"><span class="pre">User</span></tt></a> account.</p>
+<ul>
+<li><p class="first"><strong>id</strong>: The <a class="reference internal" href="#partify.models.User" title="partify.models.User"><tt class="xref py py-class docutils literal"><span class="pre">User</span></tt></a>&#8216;s unique ID</p>
+</li>
+<li><p class="first"><strong>name</strong>: The <a class="reference internal" href="#partify.models.User" title="partify.models.User"><tt class="xref py py-class docutils literal"><span class="pre">User</span></tt></a>&#8216;s display name</p>
+</li>
+<li><p class="first"><strong>username</strong>: The username of the user</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>password</strong>: The user&#8217;s password. Stored as a pass generated by</dt>
+<dd><p class="first last">Werkzeug&#8217;s generate_password_hash function, which computes an HMAC&#8217;d SHA1 hash
+of the input.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>privs</strong>: A bitfield of the user&#8217;s privileges. See <tt class="xref py py-mod docutils literal"><span class="pre">priv</span></tt> for definitions</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="partify.models.Vote">
+<em class="property">class </em><tt class="descclassname">partify.models.</tt><tt class="descname">Vote</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/models.html#Vote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.models.Vote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a vote that was taken by a user on the track. Once created these should
+not be removed, but instead simply updated.</p>
+<ul class="simple">
+<li><strong>id</strong>: The <a class="reference internal" href="#partify.models.Vote" title="partify.models.Vote"><tt class="xref py py-class docutils literal"><span class="pre">Vote</span></tt></a>&#8216;s unique ID</li>
+<li><strong>user, user_id</strong>: The <a class="reference internal" href="#partify.models.User" title="partify.models.User"><tt class="xref py py-class docutils literal"><span class="pre">User</span></tt></a> that made this vote</li>
+<li><strong>pqe, pqe_id</strong>: The <a class="reference internal" href="#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a> (if any) which the user voted on</li>
+<li><strong>phe, phe_id</strong>: The <a class="reference internal" href="#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayHistoryEntry</span></tt></a> (if any) which the user voted on</li>
+<li><strong>direction</strong>: The direction of the vote. Defaults to zero. <tt class="docutils literal"><span class="pre">-1</span></tt> is down, <tt class="docutils literal"><span class="pre">1</span></tt> is up.</li>
+</ul>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="player.html" title="Player"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ipc.html" title="IPC"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

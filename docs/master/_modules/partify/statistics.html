@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.statistics &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.statistics</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;An endpoint and helper functions for computing statistics from the play history</span>
+<span class="sd">in the database.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">PlayHistoryEntry</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">Track</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/statistics&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="statistics"><a class="viewcode-back" href="../../modules/statistics.html#partify.statistics.statistics">[docs]</a><span class="k">def</span> <span class="nf">statistics</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Provides some statistics about the :class:`PlayHistoryEntry`s in the database.</span>
+
+<span class="sd">    :returns: The status of the request, the time the statistics were generated, and the statistics.</span>
+<span class="sd">        The statistics are divided up into segments by time.</span>
+<span class="sd">    :rtype: JSON string</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># TODO: At some point, allow for statistics to be requested by key</span>
+    <span class="c"># For now, just dump a bunch of stats back out</span>
+
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;all&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s">&quot;year&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s">&quot;month&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s">&quot;week&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s">&quot;day&quot;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">}</span>
+
+    <span class="c"># compute some datetime segments to form the boundaries for statistics computations</span>
+    <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">boundaries</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;all&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span><span class="p">,</span>
+        <span class="s">&quot;year&quot;</span><span class="p">:</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=+</span><span class="mi">365</span><span class="p">),</span>
+        <span class="s">&quot;month&quot;</span><span class="p">:</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=+</span><span class="mi">30</span><span class="p">),</span>
+        <span class="s">&quot;week&quot;</span><span class="p">:</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=+</span><span class="mi">1</span><span class="p">),</span>
+        <span class="s">&quot;day&quot;</span><span class="p">:</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">boundary</span> <span class="ow">in</span> <span class="n">boundaries</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="c"># Grab the segment of history from the database</span>
+        <span class="n">segment</span> <span class="o">=</span> <span class="n">PlayHistoryEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayHistoryEntry</span><span class="o">.</span><span class="n">time_played</span> <span class="o">&gt;</span> <span class="n">boundary</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">stats</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_stats_over_segment</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span> <span class="n">response_time</span><span class="o">=</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="compute_stats_over_segment"><a class="viewcode-back" href="../../modules/statistics.html#partify.statistics.compute_stats_over_segment">[docs]</a><span class="k">def</span> <span class="nf">compute_stats_over_segment</span><span class="p">(</span><span class="n">segment</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes some statistics over a segment of history.</span>
+<span class="sd">    Note that this could be pretty slow to start. May be worth finding a way to speed this up eventually.</span>
+
+<span class="sd">    :param segment: A list of :class:`PlayHistoryEntry`s to compute statistics over.</span>
+<span class="sd">    :type segment: list of :class:`PlayHistoryEntry`s</span>
+<span class="sd">    :returns: A dictionary of statistics for this segment.</span>
+<span class="sd">    :rtype: dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">stats</span><span class="p">[</span><span class="s">&quot;total_tracks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
+    
+    <span class="c"># Compute the most played artists in this segment</span>
+    <span class="n">artists</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">segment</span><span class="p">:</span>
+        <span class="n">artist</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">track</span><span class="o">.</span><span class="n">artist</span>
+        <span class="k">if</span> <span class="n">artist</span> <span class="ow">in</span> <span class="n">artists</span><span class="p">:</span>
+            <span class="n">artists</span><span class="p">[</span><span class="n">artist</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">artists</span><span class="p">[</span><span class="n">artist</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    
+    <span class="n">artists</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">artists</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">artists</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">artists</span> <span class="o">=</span> <span class="n">artists</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="mi">4</span>    <span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">artists</span><span class="p">))]</span>
+        <span class="n">stats</span><span class="p">[</span><span class="s">&quot;top_artists&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">artist</span><span class="p">,</span> <span class="n">plays</span> <span class="ow">in</span> <span class="n">artists</span><span class="p">:</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s">&quot;top_artists&quot;</span><span class="p">][</span><span class="n">rank</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="n">artist</span><span class="p">,</span> <span class="s">&quot;plays&quot;</span><span class="p">:</span> <span class="n">plays</span><span class="p">}</span>
+            <span class="n">rank</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c"># Compute the most played albums in this segment</span>
+    <span class="n">albums</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">album_artists</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">segment</span><span class="p">:</span>
+        <span class="n">album</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">track</span><span class="o">.</span><span class="n">album</span>
+        <span class="k">if</span> <span class="n">album</span> <span class="ow">in</span> <span class="n">albums</span><span class="p">:</span>
+            <span class="n">albums</span><span class="p">[</span><span class="n">album</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">albums</span><span class="p">[</span><span class="n">album</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">album_artists</span><span class="p">[</span><span class="n">album</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">track</span><span class="o">.</span><span class="n">artist</span>
+    
+    <span class="n">albums</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">albums</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">albums</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">albums</span> <span class="o">=</span> <span class="n">albums</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">albums</span><span class="p">))]</span>
+        <span class="n">stats</span><span class="p">[</span><span class="s">&quot;top_albums&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">album</span><span class="p">,</span> <span class="n">plays</span> <span class="ow">in</span> <span class="n">albums</span><span class="p">:</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s">&quot;top_albums&quot;</span><span class="p">][</span><span class="n">rank</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="n">album</span><span class="p">,</span> <span class="s">&quot;plays&quot;</span><span class="p">:</span> <span class="n">plays</span><span class="p">,</span> <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="n">album_artists</span><span class="p">[</span><span class="n">album</span><span class="p">]}</span>
+            <span class="n">rank</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c"># Compute the users with the most plays</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">username_to_display_name</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">segment</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+            <span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">username_to_display_name</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="n">users</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">users</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="n">users</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">))]</span>
+        <span class="n">stats</span><span class="p">[</span><span class="s">&quot;top_users&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">user</span><span class="p">,</span> <span class="n">plays</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s">&quot;top_users&quot;</span><span class="p">][</span><span class="n">rank</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="n">username_to_display_name</span><span class="p">[</span><span class="n">user</span><span class="p">],</span> <span class="s">&quot;plays&quot;</span><span class="p">:</span> <span class="n">plays</span><span class="p">,</span> <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">}</span>
+            <span class="n">rank</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">stats</span><span class="p">[</span><span class="s">&quot;total_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span> <span class="p">[</span><span class="n">entry</span><span class="o">.</span><span class="n">track</span><span class="o">.</span><span class="n">length</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">segment</span><span class="p">]</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stats</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

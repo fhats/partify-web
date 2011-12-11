@@ -1,0 +1,149 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Decorators &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module Reference" href="index.html" />
+    <link rel="next" title="Forms" href="forms/index.html" />
+    <link rel="prev" title="Database" href="database.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="forms/index.html" title="Forms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="database.html" title="Database"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="database.html"
+                        title="previous chapter">Database</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="forms/index.html"
+                        title="next chapter">Forms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/modules/decorators.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-partify.decorators">
+<span id="decorators"></span><h1>Decorators<a class="headerlink" href="#module-partify.decorators" title="Permalink to this headline">¶</a></h1>
+<p>A collection of decorators for common endpoint actions.</p>
+<dl class="function">
+<dt id="partify.decorators.with_authentication">
+<tt class="descclassname">partify.decorators.</tt><tt class="descname">with_authentication</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="../_modules/partify/decorators.html#with_authentication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.decorators.with_authentication" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that ensures that a user is logged in and redirects them to a login page if the user is not authenticated.</p>
+<p>The way authentication is currently verified is simply by checking for the user key in session. This is certainly not the best means of 
+authentication but it will do for now. Security is not a high priority for this project since its intended use case is in a local scenario.
+However, it would be great to have better security if time permits.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.decorators.with_mpd">
+<tt class="descclassname">partify.decorators.</tt><tt class="descname">with_mpd</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="../_modules/partify/decorators.html#with_mpd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.decorators.with_mpd" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that establishes an MPD connection Mopidy and passes it into the wrapped function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.decorators.with_mpd_lock">
+<tt class="descclassname">partify.decorators.</tt><tt class="descname">with_mpd_lock</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="../_modules/partify/decorators.html#with_mpd_lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.decorators.with_mpd_lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that ensures that no two functions that send commands to MPD happen simultaneously.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.decorators.with_privileges">
+<tt class="descclassname">partify.decorators.</tt><tt class="descname">with_privileges</tt><big>(</big><em>privs</em>, <em>fail_mode='json'</em><big>)</big><a class="reference internal" href="../_modules/partify/decorators.html#with_privileges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.decorators.with_privileges" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that restricts access to the decorated endpoint if the logged in user does not have sufficient privileges.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="forms/index.html" title="Forms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="database.html" title="Database"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

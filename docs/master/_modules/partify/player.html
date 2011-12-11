@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.player &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.player</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Functions for showing the player page and getting player status.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Response</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">url_for</span>
+
+<span class="kn">from</span> <span class="nn">decorators</span> <span class="kn">import</span> <span class="n">with_authentication</span><span class="p">,</span> <span class="n">with_mpd</span>
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">ipc</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">PlayQueueEntry</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">Track</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">partify.priv</span> <span class="kn">import</span> <span class="n">dump_user_privileges</span><span class="p">,</span> <span class="n">user_has_privilege</span>
+<span class="kn">from</span> <span class="nn">partify.selection</span> <span class="kn">import</span> <span class="n">needs_voting</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/player&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<div class="viewcode-block" id="player"><a class="viewcode-back" href="../../modules/player.html#partify.player.player">[docs]</a><span class="k">def</span> <span class="nf">player</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Display the player page.</span>
+
+<span class="sd">    Sends the user&#39;s queue and the global queue along and displays the player page.&quot;&quot;&quot;</span>
+    <span class="n">users_tracks</span> <span class="o">=</span> <span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+    <span class="n">global_queue</span> <span class="o">=</span> <span class="n">get_global_queue</span><span class="p">()</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;lastfm_api_key&#39;</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;LASTFM_API_KEY&#39;</span><span class="p">],</span> <span class="s">&#39;lastfm_api_secret&#39;</span><span class="p">:</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;LASTFM_API_SECRET&#39;</span><span class="p">]}</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+
+    <span class="c"># Do some logic to figure out if we need to show the admin console (i.e. the hostname or port for the MPD server are blank)</span>
+    <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;MPD_SERVER_HOSTNAME&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;MPD_SERVER_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">user_has_privilege</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s">&quot;ADMIN_INTERFACE&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">user_has_privilege</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s">&quot;ADMIN_CONFIG&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">&quot;admin_console&quot;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&quot;player.html&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">user_play_queue</span><span class="o">=</span><span class="n">users_tracks</span><span class="p">,</span> <span class="n">global_play_queue</span><span class="o">=</span><span class="n">global_queue</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">voting_enabled</span><span class="o">=</span><span class="n">needs_voting</span><span class="p">[</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SELECTION_SCHEME&#39;</span><span class="p">]],</span> <span class="n">user_privs</span><span class="o">=</span><span class="n">dump_user_privileges</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/player/status/poll&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<span class="nd">@with_mpd</span>
+<div class="viewcode-block" id="status"><a class="viewcode-back" href="../../modules/player.html#partify.player.status">[docs]</a><span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An endpoint for poll-based player status updates.</span>
+
+<span class="sd">    :param current: The timestamp in seconds of the last time the client got a playlist update.</span>
+<span class="sd">        Useful for minimizing responses so that the entire party queue isn&#39;t being shuffled around</span>
+<span class="sd">        every time an update is requested.</span>
+<span class="sd">    :type current: float or string</span>
+<span class="sd">    :returns: A structure containing the current MPD status. Contains the ``global_queue``,</span>
+<span class="sd">        ``user_queue``, and ``last_global_playlist_update`` keys if ``current`` was not specified</span>
+<span class="sd">        or was before the time of the last playlist update.</span>
+<span class="sd">    :rtype: JSON string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client_current</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;current&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">client_current</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">client_current</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">client_current</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">_get_status</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+
+    <span class="n">playlist_last_updated</span> <span class="o">=</span> <span class="n">ipc</span><span class="o">.</span><span class="n">get_time</span><span class="p">(</span><span class="s">&#39;playlist&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">client_current</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">client_current</span> <span class="o">&lt;</span> <span class="n">playlist_last_updated</span><span class="p">:</span>
+        <span class="n">response</span><span class="p">[</span><span class="s">&#39;global_queue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_global_queue</span><span class="p">()</span>
+        <span class="n">response</span><span class="p">[</span><span class="s">&#39;user_queue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+        <span class="n">response</span><span class="p">[</span><span class="s">&#39;last_global_playlist_update&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">playlist_last_updated</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;play&#39;</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;elapsed&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/player/status/idle&#39;</span><span class="p">)</span>
+<span class="nd">@with_mpd</span>
+<div class="viewcode-block" id="idle"><a class="viewcode-back" href="../../modules/player.html#partify.player.idle">[docs]</a><span class="k">def</span> <span class="nf">idle</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An endpoint for push-based player events.</span>
+
+<span class="sd">    The function issues an MPD IDLE command to Mopidy and blocks on response back from Mopidy. Once a response is received, a Server-Sent Events (SSE) transmission is prepared</span>
+<span class="sd">    and returned as the response to the request.</span>
+
+<span class="sd">    **Note:** This endpoint is not currently in use but sticking around</span>
+<span class="sd">    until SSEs are implemented better or long-polling is needed.&quot;&quot;&quot;</span>
+    <span class="n">mpd</span><span class="o">.</span><span class="n">send_idle</span><span class="p">()</span>
+    <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">mpd</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[])</span>
+    <span class="n">changed</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">fetch_idle</span><span class="p">()</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">_get_status</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="s">&quot;event: </span><span class="si">%s</span><span class="se">\n</span><span class="s">data: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">changed</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">mimetype</span><span class="o">=</span><span class="s">&#39;text/event-stream&#39;</span><span class="p">,</span> <span class="n">direct_passthrough</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="get_global_queue"><a class="viewcode-back" href="../../modules/player.html#partify.player.get_global_queue">[docs]</a><span class="k">def</span> <span class="nf">get_global_queue</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;A convenience function for retrieving the global play queue.</span>
+
+<span class="sd">    :returns: A list of :class:`PlayQueueEntry`s in their dictionary representation.</span>
+<span class="sd">    :rtype: list of dicts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db_queue</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">track</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">db_queue</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="get_user_queue"><a class="viewcode-back" href="../../modules/player.html#partify.player.get_user_queue">[docs]</a><span class="k">def</span> <span class="nf">get_user_queue</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A convenience function for getting a specific user&#39;s queue.</span>
+
+<span class="sd">    :returns: A list of :class:PlayQueueEntry`s in their dictionary representation.</span>
+<span class="sd">    :rtype: list of dicts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db_queue</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_priority</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">track</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">db_queue</span><span class="p">]</span>
+</div>
+<span class="k">def</span> <span class="nf">_get_status</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the entire player status needed for the front end.</span>
+
+<span class="sd">    :returns: A dictionary containing the player status.</span>
+<span class="sd">    :rtype: dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Get the player status</span>
+    <span class="n">player_status</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+    <span class="c"># Get the current song</span>
+    <span class="n">current_song</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">currentsong</span><span class="p">()</span>
+
+    <span class="n">status</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="s">&#39;artist&#39;</span><span class="p">,</span> <span class="s">&#39;album&#39;</span><span class="p">,</span> <span class="s">&#39;date&#39;</span><span class="p">,</span> <span class="s">&#39;file&#39;</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">):</span>
+        <span class="n">status</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_song</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;time&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;state&#39;</span><span class="p">,</span> <span class="s">&#39;volume&#39;</span><span class="p">,</span> <span class="s">&#39;elapsed&#39;</span><span class="p">,</span> <span class="s">&#39;consume&#39;</span><span class="p">,</span> <span class="s">&#39;random&#39;</span><span class="p">,</span> <span class="s">&#39;repeat&#39;</span><span class="p">,</span> <span class="s">&#39;single&#39;</span><span class="p">):</span>
+        <span class="n">status</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">player_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;elapsed&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">status</span><span class="p">[</span><span class="s">&#39;pqe_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">((</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">mpd_id</span> <span class="o">==</span> <span class="n">status</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()),</span> <span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="c"># Throw in a timestamp to assist synchronization</span>
+    <span class="n">status</span><span class="p">[</span><span class="s">&#39;response_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">status</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

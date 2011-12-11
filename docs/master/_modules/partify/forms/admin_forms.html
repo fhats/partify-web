@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.forms.admin_forms &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../../index.html" />
+    <link rel="up" title="partify" href="../../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.forms.admin_forms</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Contains forms used for gathering input for administrative features.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">BooleanField</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">Form</span> 
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">HiddenField</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">IntegerField</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">SelectField</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">TextField</span>
+<span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">validators</span>
+
+<span class="kn">from</span> <span class="nn">partify.priv</span> <span class="kn">import</span> <span class="n">priv_in_english</span>
+
+<div class="viewcode-block" id="ConfigurationForm"><a class="viewcode-back" href="../../../modules/forms/admin.html#partify.forms.admin_forms.ConfigurationForm">[docs]</a><span class="k">class</span> <span class="nc">ConfigurationForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A WTForm for configuration information.</span>
+
+<span class="sd">    Each of the fields should be the loweredcased name of the corresponding configuration field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">selection_scheme</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s">&quot;Track Selection&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()],</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;ROUND_ROBIN&#39;</span><span class="p">,</span> <span class="s">&#39;Round Robin&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;FCFS_VOTE&#39;</span><span class="p">,</span> <span class="s">&#39;First-Come, First-Served with Voting&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;FCFS&#39;</span><span class="p">,</span> <span class="s">&#39;First-Come, First-Served&#39;</span><span class="p">)])</span>
+    <span class="n">mpd_server_hostname</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;MPD Server Hostname&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()])</span>
+    <span class="n">mpd_server_port</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s">&quot;MPD Server Port&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">(),</span> <span class="n">validators</span><span class="o">.</span><span class="n">NumberRange</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">65535</span><span class="p">)])</span>
+    <span class="n">server_host</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;Hostname to listen on&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()])</span>
+    <span class="n">server_port</span> <span class="o">=</span> <span class="n">IntegerField</span><span class="p">(</span><span class="s">&quot;Port to listen on&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">(),</span> <span class="n">validators</span><span class="o">.</span><span class="n">NumberRange</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">65535</span><span class="p">)])</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">SelectField</span><span class="p">(</span><span class="s">&quot;Underlying Server Software&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()],</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;tornado&#39;</span><span class="p">,</span> <span class="s">&#39;Tornado&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;builtin&#39;</span><span class="p">,</span> <span class="s">&#39;Builtin Debugging Server&#39;</span><span class="p">)])</span>
+    <span class="n">lastfm_api_key</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;Last.fm API Key&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Optional</span><span class="p">()])</span>
+    <span class="n">lastfm_api_secret</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;Last.fm API Secret&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Optional</span><span class="p">()])</span>
+</div>
+<div class="viewcode-block" id="create_single_user_admin_admin_form"><a class="viewcode-back" href="../../../modules/forms/admin.html#partify.forms.admin_forms.create_single_user_admin_admin_form">[docs]</a><span class="k">def</span> <span class="nf">create_single_user_admin_admin_form</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a SingleUserAdminAdminForm that can be used in concert with other SingleUserAdminAdminForms.&quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">SingleUserAdminAdminForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">SingleUserAdminAdminForm</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">_admin_config&quot;</span> <span class="o">%</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">(</span><span class="n">priv_in_english</span><span class="p">(</span><span class="s">&quot;ADMIN_CONFIG&quot;</span><span class="p">),</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()]))</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">SingleUserAdminAdminForm</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">_admin_playback&quot;</span> <span class="o">%</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">(</span><span class="n">priv_in_english</span><span class="p">(</span><span class="s">&quot;ADMIN_PLAYBACK&quot;</span><span class="p">),</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()]))</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">SingleUserAdminAdminForm</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">_admin_admin&quot;</span> <span class="o">%</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">(</span><span class="n">priv_in_english</span><span class="p">(</span><span class="s">&quot;ADMIN_ADMIN&quot;</span><span class="p">),</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()]))</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">SingleUserAdminAdminForm</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">_admin_interface&quot;</span> <span class="o">%</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">BooleanField</span><span class="p">(</span><span class="n">priv_in_english</span><span class="p">(</span><span class="s">&quot;ADMIN_INTERFACE&quot;</span><span class="p">),</span> <span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">Required</span><span class="p">()]))</span>
+
+    <span class="k">return</span> <span class="n">SingleUserAdminAdminForm</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

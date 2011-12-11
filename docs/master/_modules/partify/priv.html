@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.priv &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.priv</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Data and functions for giving, revoking, and obtaining user privileges.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">partify.database</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="n">privs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;ADMIN_CONFIG&quot;</span><span class="p">:</span> <span class="mh">0x01</span><span class="p">,</span>
+    <span class="s">&quot;ADMIN_PLAYBACK&quot;</span><span class="p">:</span> <span class="mh">0x02</span><span class="p">,</span>
+    <span class="s">&quot;ADMIN_ADMIN&quot;</span><span class="p">:</span> <span class="mh">0x04</span><span class="p">,</span>
+    <span class="s">&quot;ADMIN_INTERFACE&quot;</span><span class="p">:</span> <span class="mh">0x08</span>
+<span class="p">}</span>
+
+<span class="n">privs_in_english</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;ADMIN_CONFIG&quot;</span><span class="p">:</span> <span class="s">&quot;Modify configuration settings&quot;</span><span class="p">,</span>
+    <span class="s">&quot;ADMIN_PLAYBACK&quot;</span><span class="p">:</span> <span class="s">&quot;Access playback controls&quot;</span><span class="p">,</span>
+    <span class="s">&quot;ADMIN_ADMIN&quot;</span><span class="p">:</span> <span class="s">&quot;Modify user privileges&quot;</span><span class="p">,</span>
+    <span class="s">&quot;ADMIN_INTERFACE&quot;</span><span class="p">:</span> <span class="s">&quot;View administration interface&quot;</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="give_user_privilege"><a class="viewcode-back" href="../../modules/priv.html#partify.priv.give_user_privilege">[docs]</a><span class="k">def</span> <span class="nf">give_user_privilege</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">priv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a user (either a :class:`User` type or an ID), set the given privilege (identified by string) in the user&#39;s privilege list.</span>
+
+<span class="sd">    :param user: The user to whom to give the privilege</span>
+<span class="sd">    :type user: :class:`User` or a user ID</span>
+<span class="sd">    :param priv: The privilege to give to the user.</span>
+<span class="sd">    :type priv: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="c"># Set the appropriate bit in the user&#39;s privileges bitfield</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">privs</span> <span class="o">|=</span> <span class="n">privs</span><span class="p">[</span><span class="n">priv</span><span class="p">]</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="revoke_user_privilege"><a class="viewcode-back" href="../../modules/priv.html#partify.priv.revoke_user_privilege">[docs]</a><span class="k">def</span> <span class="nf">revoke_user_privilege</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">priv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a user (either a :class:`User` type or an ID), remove the given privilege (identified by string) in the user&#39;s privilege list.</span>
+
+<span class="sd">    :param user: The user from whom to revoke the privilege</span>
+<span class="sd">    :type user: :class:`User` or a user ID</span>
+<span class="sd">    :param priv: The privilege to revoke from the user.</span>
+<span class="sd">    :type priv: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">privs</span> <span class="o">&amp;=</span> <span class="p">(</span><span class="o">~</span><span class="n">privs</span><span class="p">[</span><span class="n">priv</span><span class="p">])</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="user_has_privilege"><a class="viewcode-back" href="../../modules/priv.html#partify.priv.user_has_privilege">[docs]</a><span class="k">def</span> <span class="nf">user_has_privilege</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">priv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tests whether or not the user has a certain privilege.</span>
+
+<span class="sd">    :param user: The user from whom to revoke the privilege</span>
+<span class="sd">    :type user: :class:`User` or a user ID</span>
+<span class="sd">    :param priv: The privilege to test for.</span>
+<span class="sd">    :type priv: string</span>
+<span class="sd">    :returns: Whether or not the user has the privilege</span>
+<span class="sd">    :rtype: boolean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">privs</span> <span class="o">&amp;</span> <span class="n">privs</span><span class="p">[</span><span class="n">priv</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="dump_user_privileges"><a class="viewcode-back" href="../../modules/priv.html#partify.priv.dump_user_privileges">[docs]</a><span class="k">def</span> <span class="nf">dump_user_privileges</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Lists the user&#39;s privileges.</span>
+
+<span class="sd">    :param user: The user from whom to revoke the privilege</span>
+<span class="sd">    :type user: :class:`User` or a user ID</span>
+<span class="sd">    :returns: The privileges the user has</span>
+<span class="sd">    :rtype: list of strings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">privs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">privs</span> <span class="o">&amp;</span> <span class="n">v</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="priv_in_english"><a class="viewcode-back" href="../../modules/priv.html#partify.priv.priv_in_english">[docs]</a><span class="k">def</span> <span class="nf">priv_in_english</span><span class="p">(</span><span class="n">priv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Translates a privilege integer into its string representation.</span>
+
+<span class="sd">    :param priv: The privilege to look up</span>
+<span class="sd">    :type priv: integer</span>
+<span class="sd">    :returns: The string representation of the privilege</span>
+<span class="sd">    :rtype: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">privs_in_english</span><span class="p">[</span><span class="n">priv</span><span class="p">]</span>
+    </div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

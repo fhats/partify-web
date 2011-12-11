@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Process</span>
+
+<span class="kn">from</span> <span class="nn">werkzeug.contrib.profiler</span> <span class="kn">import</span> <span class="n">MergeStream</span>
+<span class="kn">from</span> <span class="nn">werkzeug.contrib.profiler</span> <span class="kn">import</span> <span class="n">ProfilerMiddleware</span>
+<span class="kn">from</span> <span class="nn">werkzeug.serving</span> <span class="kn">import</span> <span class="n">run_simple</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">url_for</span>
+
+<div class="viewcode-block" id="FlaskWithRouteDocs"><a class="viewcode-back" href="../modules/toplevel.html#partify.FlaskWithRouteDocs">[docs]</a><span class="k">class</span> <span class="nc">FlaskWithRouteDocs</span><span class="p">(</span><span class="n">Flask</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A subclass of Flask to allow using :route: and :methods: in docstrings, a la Sphinx.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="FlaskWithRouteDocs.route"><a class="viewcode-back" href="../modules/toplevel.html#partify.FlaskWithRouteDocs.route">[docs]</a>    <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overrides the @app.route decorator provided by Flask. Takes the opportunity to replace</span>
+<span class="sd">        instances of :route: or :methods: in the wrapped function&#39;s docstring with information from </span>
+<span class="sd">        the app.route() decorator. If :route: or :methods: are not present in the docstring at the </span>
+<span class="sd">        time of wrapping, then append route and methods to bottom of the docstring for nicer documentation.&quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="n">route_dec</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FlaskWithRouteDocs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="n">methods_str</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;methods&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="s">&quot;:route:&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;:route:&quot;</span><span class="p">,</span> <span class="n">rule</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s">    **Route:** ``</span><span class="si">%s</span><span class="s">``&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">rule</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="s">&quot;:methods:&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;:methods:&quot;</span><span class="p">,</span> <span class="n">methods_str</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s">    **Methods:** ``</span><span class="si">%s</span><span class="s">``&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">methods_str</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">route_dec</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">decorator</span>
+        
+</div></div>
+<span class="n">app</span> <span class="o">=</span> <span class="n">FlaskWithRouteDocs</span><span class="p">(</span><span class="s">&quot;partify&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">partify.config</span> <span class="kn">import</span> <span class="n">load_config_from_db</span>
+<span class="kn">from</span> <span class="nn">partify.database</span> <span class="kn">import</span> <span class="n">init_db</span>
+<span class="kn">from</span> <span class="nn">partify.queue</span> <span class="kn">import</span> <span class="n">on_playlist_update</span><span class="p">,</span> <span class="n">ensure_mpd_playlist_consistency</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../modules/toplevel.html#partify.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;The &#39;default&#39; route when you hit the index of the app.</span>
+<span class="sd">    Just sweeps the user off to the player page (which redirects to login if there is no user authenticated).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s">&#39;player&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="on_startup"><a class="viewcode-back" href="../modules/toplevel.html#partify.on_startup">[docs]</a><span class="k">def</span> <span class="nf">on_startup</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Performs all of the actions needed to get the web server up and running.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">load_config_from_db</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">init_db</span><span class="p">()</span>
+        <span class="n">load_config_from_db</span><span class="p">()</span>
+    <span class="n">ipc</span><span class="o">.</span><span class="n">init_times</span><span class="p">()</span>
+    <span class="n">ipc</span><span class="o">.</span><span class="n">init_desired_player_state</span><span class="p">()</span>
+    <span class="n">ipc</span><span class="o">.</span><span class="n">init_mpd_lock</span><span class="p">()</span>
+    <span class="n">ensure_mpd_playlist_consistency</span><span class="p">()</span>
+    <span class="n">ipc</span><span class="o">.</span><span class="n">update_time</span><span class="p">(</span><span class="s">&#39;playlist&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+    <span class="c"># Start the process which subscribes to MPD events using the IDLE command</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;TESTING&#39;</span><span class="p">]:</span>
+        <span class="n">mpd_event_listener</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">on_playlist_update</span><span class="p">)</span>
+        <span class="n">mpd_event_listener</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../modules/toplevel.html#partify.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Starts the WebApp.&quot;&quot;&quot;</span>
+    <span class="c"># TODO: Figure out these imports</span>
+    <span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">admin</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">vote</span>
+    <span class="n">init_db</span><span class="p">()</span>
+    <span class="n">on_startup</span><span class="p">()</span>
+    
+    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;PROFILE&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+        <span class="n">datetime_string</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">-%H-%M-%S&quot;</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;tmp/profile</span><span class="si">%s</span><span class="s">.log&quot;</span> <span class="o">%</span> <span class="n">datetime_string</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">MergeStream</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">wsgi_app</span> <span class="o">=</span> <span class="n">ProfilerMiddleware</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">wsgi_app</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SERVER&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;builtin&#39;</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SERVER_HOST&#39;</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SERVER_PORT&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SERVER&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;tornado&#39;</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">tornado.options</span>
+        <span class="kn">from</span> <span class="nn">tornado.wsgi</span> <span class="kn">import</span> <span class="n">WSGIContainer</span>
+        <span class="kn">from</span> <span class="nn">tornado.httpserver</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
+        <span class="kn">from</span> <span class="nn">tornado.ioloop</span> <span class="kn">import</span> <span class="n">IOLoop</span>
+
+        <span class="n">tornado</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">enable_pretty_logging</span><span class="p">()</span>
+        <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">WSGIContainer</span><span class="p">(</span><span class="n">app</span><span class="p">))</span>
+        <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SERVER_PORT&#39;</span><span class="p">])</span>
+        <span class="n">IOLoop</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

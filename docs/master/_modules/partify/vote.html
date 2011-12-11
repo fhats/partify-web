@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.vote &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.vote</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;A collection of endpoints for voting on tracks and getting voting</span>
+<span class="sd">information.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">session</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">and_</span>
+
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">partify.database</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">partify.decorators</span> <span class="kn">import</span> <span class="n">with_authentication</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">PlayQueueEntry</span><span class="p">,</span> <span class="n">Vote</span>
+<span class="kn">from</span> <span class="nn">partify.queue</span> <span class="kn">import</span> <span class="n">ensure_mpd_playlist_consistency</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/status&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<div class="viewcode-block" id="vote_status"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_status">[docs]</a><span class="k">def</span> <span class="nf">vote_status</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Gets the logged-in user&#39;s vote status for a certain track.</span>
+
+<span class="sd">    :param pqe: The ID of the PlayQueueEntry</span>
+<span class="sd">    :type pqe: integer</span>
+<span class="sd">    :returns: The status of the request and the direction of any existing vote.</span>
+<span class="sd">    :rtype: JSON string </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39;pqe&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">pqe</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pqe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;A PQE by that ID does not exist!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pqe</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You cannot vote on your own track!&quot;</span><span class="p">)</span>
+        <span class="n">vote</span> <span class="o">=</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">],</span> <span class="n">Vote</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">vote</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">vote</span><span class="o">.</span><span class="n">direction</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You must specify the id of the PlayQueueEntry to get the votes for!&quot;</span><span class="p">)</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/up&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<div class="viewcode-block" id="vote_up"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_up">[docs]</a><span class="k">def</span> <span class="nf">vote_up</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Records a vote in the up direction for the logged-in user.</span>
+
+<span class="sd">    :returns: The status of the request.</span>
+<span class="sd">    :rtype: JSON string </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39;pqe&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+        <span class="n">pqe</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pqe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;A PQE by that ID does not exist!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pqe</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You cannot vote on your own track!&quot;</span><span class="p">)</span>
+        <span class="n">vote</span> <span class="o">=</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">],</span> <span class="n">Vote</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">vote</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">vote</span> <span class="o">=</span> <span class="n">Vote</span><span class="p">(</span><span class="n">pqe_id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">],</span> <span class="n">user_id</span><span class="o">=</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">],</span> <span class="n">direction</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vote</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">vote</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">ensure_mpd_playlist_consistency</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You must specify the id of the PlayQueueEntry to vote for it!&quot;</span><span class="p">)</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/down&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<div class="viewcode-block" id="vote_down"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_down">[docs]</a><span class="k">def</span> <span class="nf">vote_down</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Records a vote in the down direction for the logged-in user.</span>
+
+<span class="sd">    :returns: The status of the request.</span>
+<span class="sd">    :rtype: JSON string </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s">&#39;pqe&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+        <span class="n">pqe</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pqe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;A PQE by that ID does not exist!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pqe</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You cannot vote on your own track!&quot;</span><span class="p">)</span>
+        <span class="n">vote</span> <span class="o">=</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">],</span> <span class="n">Vote</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">vote</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">vote</span> <span class="o">=</span> <span class="n">Vote</span><span class="p">(</span><span class="n">pqe_id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">],</span> <span class="n">user_id</span><span class="o">=</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">],</span> <span class="n">direction</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vote</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">vote</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">ensure_mpd_playlist_consistency</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You must specify the id of the PlayQueueEntry to vote for it!&quot;</span><span class="p">)</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/total&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="vote_total"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_total">[docs]</a><span class="k">def</span> <span class="nf">vote_total</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Retreives the total vote score for the specified track. One of pqe or phe must be </span>
+<span class="sd">    specified, but not both.</span>
+
+<span class="sd">    :param pqe: The ID of the PlayQueueEntry</span>
+<span class="sd">    :type pqe: integer, optional</span>
+<span class="sd">    :param phe: The ID of the PlayHistoryEntry</span>
+<span class="sd">    :type phe: integer, optional</span>
+<span class="sd">    :returns: The status of the request and the total vote score of the specified track.</span>
+<span class="sd">    :rtype: JSON string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="s">&#39;pqe&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">pqe</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pqe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;A PQE by that ID does not exist!&quot;</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">direction</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;pqe&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s">&#39;phe&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+        <span class="n">phe</span> <span class="o">=</span> <span class="n">PlayHistoryEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;phe&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">phe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;A PHE by that ID does not exist!&quot;</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">direction</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">phe_id</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s">&#39;phe&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You must specify the id of the PlayQueueEntry to get the total for!&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

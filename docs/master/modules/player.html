@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Player &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module Reference" href="index.html" />
+    <link rel="next" title="Privileges" href="priv.html" />
+    <link rel="prev" title="Models" href="models.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="priv.html" title="Privileges"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="models.html" title="Models"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="models.html"
+                        title="previous chapter">Models</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="priv.html"
+                        title="next chapter">Privileges</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/modules/player.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-partify.player">
+<span id="player"></span><h1>Player<a class="headerlink" href="#module-partify.player" title="Permalink to this headline">¶</a></h1>
+<p>Functions for showing the player page and getting player status.</p>
+<dl class="function">
+<dt id="partify.player.get_global_queue">
+<tt class="descclassname">partify.player.</tt><tt class="descname">get_global_queue</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/partify/player.html#get_global_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.player.get_global_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A convenience function for retrieving the global play queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>PlayQueueEntry`s in their dictionary representation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of dicts</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.player.get_user_queue">
+<tt class="descclassname">partify.player.</tt><tt class="descname">get_user_queue</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="../_modules/partify/player.html#get_user_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.player.get_user_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A convenience function for getting a specific user&#8217;s queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of :class:PlayQueueEntry`s in their dictionary representation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of dicts</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.player.idle">
+<tt class="descclassname">partify.player.</tt><tt class="descname">idle</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/player.html#idle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.player.idle" title="Permalink to this definition">¶</a></dt>
+<dd><p>An endpoint for push-based player events.</p>
+<p>The function issues an MPD IDLE command to Mopidy and blocks on response back from Mopidy. Once a response is received, a Server-Sent Events (SSE) transmission is prepared
+and returned as the response to the request.</p>
+<p><strong>Note:</strong> This endpoint is not currently in use but sticking around
+until SSEs are implemented better or long-polling is needed.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/player/status/idle</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.player.player">
+<tt class="descclassname">partify.player.</tt><tt class="descname">player</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/player.html#player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.player.player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the player page.</p>
+<p>Sends the user&#8217;s queue and the global queue along and displays the player page.</p>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/player</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.player.status">
+<tt class="descclassname">partify.player.</tt><tt class="descname">status</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/player.html#status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.player.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>An endpoint for poll-based player status updates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>current</strong> (<em>float or string</em>) &#8211; The timestamp in seconds of the last time the client got a playlist update.
+Useful for minimizing responses so that the entire party queue isn&#8217;t being shuffled around
+every time an update is requested.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A structure containing the current MPD status. Contains the <tt class="docutils literal"><span class="pre">global_queue</span></tt>,
+<tt class="docutils literal"><span class="pre">user_queue</span></tt>, and <tt class="docutils literal"><span class="pre">last_global_playlist_update</span></tt> keys if <tt class="docutils literal"><span class="pre">current</span></tt> was not specified
+or was before the time of the last playlist update.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/player/status/poll</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="priv.html" title="Privileges"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="models.html" title="Models"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

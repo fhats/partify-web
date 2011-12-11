@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>partify.queue &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="partify" href="../partify.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" accesskey="U">partify</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for partify.queue</h1><div class="highlight"><pre>
+<span class="c"># Copyright 2011 Fred Hatfull</span>
+<span class="c">#</span>
+<span class="c"># This file is part of Partify.</span>
+<span class="c">#</span>
+<span class="c"># Partify is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># Partify is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with Partify.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Provides endpoints for queue management as well as synchronization</span>
+<span class="sd">of the queue with the MPD server.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip_longest</span>
+<span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">and_</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">not_</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.event</span> <span class="kn">import</span> <span class="n">listens_for</span>
+
+<span class="kn">from</span> <span class="nn">database</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">decorators</span> <span class="kn">import</span> <span class="n">with_authentication</span>
+<span class="kn">from</span> <span class="nn">decorators</span> <span class="kn">import</span> <span class="n">with_mpd</span>
+<span class="kn">from</span> <span class="nn">decorators</span> <span class="kn">import</span> <span class="n">with_mpd_lock</span>
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">partify</span> <span class="kn">import</span> <span class="n">ipc</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">PlayHistoryEntry</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">PlayQueueEntry</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">Track</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">partify.models</span> <span class="kn">import</span> <span class="n">Vote</span>
+<span class="kn">from</span> <span class="nn">partify.player</span> <span class="kn">import</span> <span class="n">get_user_queue</span><span class="p">,</span> <span class="n">_get_status</span>
+<span class="kn">from</span> <span class="nn">partify.selection</span> <span class="kn">import</span> <span class="n">get_selection_scheme</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/add&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<span class="nd">@with_mpd</span>
+<span class="nd">@with_mpd_lock</span>
+<div class="viewcode-block" id="add_to_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.add_to_queue">[docs]</a><span class="k">def</span> <span class="nf">add_to_queue</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Takes a Spotify URL and adds it to the current play queue.</span>
+
+<span class="sd">    :param spotify_uri: The spotify URI of the track to add</span>
+<span class="sd">    :type spotify_uri: string</span>
+<span class="sd">    :returns: The status of the request, the user&#39;s queue, and the spotify url of the track added.</span>
+<span class="sd">    :rtype: JSON string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">spotify_uri</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s">&#39;spotify_uri&#39;</span><span class="p">]</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="n">add_track_from_spotify_url</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">spotify_uri</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;The Spotify URL you specified is invalid.&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;ok&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]),</span> <span class="nb">file</span><span class="o">=</span><span class="n">spotify_uri</span><span class="p">)</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/add_album&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<span class="nd">@with_mpd</span>
+<span class="nd">@with_mpd_lock</span>
+<div class="viewcode-block" id="add_album_from_track"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.add_album_from_track">[docs]</a><span class="k">def</span> <span class="nf">add_album_from_track</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Takes a Spotify track URL, finds its corresponding album, and adds it to the user&#39;s queue.</span>
+
+<span class="sd">    :param spotify_files: a list of spotify urls of the tracks in the album to add</span>
+<span class="sd">    :type spotify_files: list of strings</span>
+<span class="sd">    :returns: The status of the request and the user&#39;s queue.</span>
+<span class="sd">    :rtype: JSON string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">spotify_files</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s">&#39;spotify_files&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">spotify_files</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">spotify_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;The Spotify URL you specified is invalid.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">spotify_url</span> <span class="ow">in</span> <span class="n">spotify_files</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">add_track_from_spotify_url</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">spotify_url</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;ok&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]))</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/remove&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<span class="nd">@with_mpd</span>
+<span class="nd">@with_mpd_lock</span>
+<div class="viewcode-block" id="remove_from_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.remove_from_queue">[docs]</a><span class="k">def</span> <span class="nf">remove_from_queue</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes the specified track from the user&#39;s play queue.</span>
+<span class="sd">    </span>
+<span class="sd">    :param track_id: The ID of :class:`PlayQueueEntry` to remove</span>
+<span class="sd">    :type track_id: integer</span>
+<span class="sd">    :returns: The status of the request and the user&#39;s queue</span>
+<span class="sd">    :rtype: JSON string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">track_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;track_id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">track_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;No track specified for removal!&quot;</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">track_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">track_id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;Not a valid track ID!&quot;</span><span class="p">)</span>
+
+    <span class="c"># Pull the track from the play queue</span>
+    <span class="n">track</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">mpd_id</span> <span class="o">==</span> <span class="n">track_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">track</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;Could not find track with id </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">track_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">track</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You are not authorized to remove this track!&quot;</span><span class="p">)</span>
+    
+    <span class="c"># Remove the track! All of the details will follow for now.... later we&#39;ll need to be watching the reordering of tracks (#20)</span>
+    <span class="n">mpd</span><span class="o">.</span><span class="n">deleteid</span><span class="p">(</span><span class="n">track_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;ok&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]))</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/reorder&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<div class="viewcode-block" id="reorder_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.reorder_queue">[docs]</a><span class="k">def</span> <span class="nf">reorder_queue</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Reorders the user&#39;s play queue.</span>
+
+<span class="sd">    :param track_list: A dictionary with keys of :class:`PlayQueueEntry`s to be moved and</span>
+<span class="sd">        values that are the positions to move the queue entry to.</span>
+<span class="sd">    :type track_list: dictionary(integer, integer)</span>
+<span class="sd">    :returns: The status of the request and the user&#39;s queue</span>
+<span class="sd">    :rtype: JSON String</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_order_list</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;track_list&#39;</span><span class="p">)</span>
+
+    <span class="c"># expecting a dictionary of request parameters with the key as the PQE id and the value as the new priority</span>
+    <span class="c"># Note that I&#39;m not doing any error checking here because 500ing is good enough right now</span>
+    <span class="c"># Should probably put a try...catch block around the cast to int</span>
+    <span class="k">for</span> <span class="n">pqe_id</span><span class="p">,</span> <span class="n">new_priority</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">pqe</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pqe_id</span><span class="p">)</span>
+
+        <span class="c"># TODO: This auth checking should move into its own function!</span>
+        <span class="k">if</span> <span class="n">pqe</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&quot;You are not authorized to modify this track!&quot;</span><span class="p">)</span>
+
+        <span class="n">pqe</span><span class="o">.</span><span class="n">user_priority</span> <span class="o">=</span> <span class="n">new_priority</span>
+
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">ensure_mpd_playlist_consistency</span><span class="p">()</span>
+
+    <span class="c"># TODO: This returning the queue thing should probably get moved to a decorator or something</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&#39;ok&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]))</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/list&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@with_authentication</span>
+<div class="viewcode-block" id="list_user_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.list_user_queue">[docs]</a><span class="k">def</span> <span class="nf">list_user_queue</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Gets the user&#39;s queue.</span>
+
+<span class="sd">    :returns: The status of the request and the user&#39;s queue.</span>
+<span class="sd">    :rtype: JSON string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_queue</span> <span class="o">=</span> <span class="n">get_user_queue</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s">&quot;ok&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">user_queue</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="add_track_from_spotify_url"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.add_track_from_spotify_url">[docs]</a><span class="k">def</span> <span class="nf">add_track_from_spotify_url</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">spotify_url</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds a track to the user&#39;s queue from the specified spotify URL.</span>
+<span class="sd">    If user_id is None then the current user is assumed.</span>
+
+<span class="sd">    :param mpd: The MPD instance to add the track to</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :param spotify_url: The Spotify URL of the track</span>
+<span class="sd">    :type spotify_url: string</span>
+<span class="sd">    :param user_id: The ID of the :class:`User` to add the track for</span>
+<span class="sd">    :type user_id: integer</span>
+<span class="sd">    :returns: The :class:`Track` of the :class:`PlayQueueEntry` that was added</span>
+<span class="sd">    :rtype: :class:`Track`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]</span>
+
+    <span class="n">track</span> <span class="o">=</span> <span class="n">track_from_spotify_url</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">track</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="n">mpd_id</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">addid</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">)</span>
+
+    <span class="c"># Add the track to the play queue</span>
+    <span class="c"># Disabling this for now since the playlist consistency function should figure it out</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">PlayQueueEntry</span><span class="p">(</span><span class="n">track</span><span class="o">=</span><span class="n">track</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">mpd_id</span><span class="o">=</span><span class="n">mpd_id</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">track</span>
+
+<span class="c"># These *_from_spotify_url functions should probably move to a kind of util file</span></div>
+<div class="viewcode-block" id="track_from_spotify_url"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.track_from_spotify_url">[docs]</a><span class="k">def</span> <span class="nf">track_from_spotify_url</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a Track object from the Spotify metadata associated with the given Spotify URI.</span>
+
+<span class="sd">    :param spotify_url: The Spotify URL of the track to get metadata for</span>
+<span class="sd">    :type spotify_url: string</span>
+<span class="sd">    :returns: A :class:`Track` with the metadata from ``spotify_url``</span>
+<span class="sd">    :rtype: :class:`Track`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">existing_tracks</span> <span class="o">=</span> <span class="n">Track</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Track</span><span class="o">.</span><span class="n">spotify_url</span> <span class="o">==</span> <span class="n">spotify_url</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_tracks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c"># If we have a track that does not already have a Track entry with the same spotify URI, then we need get the information from Spotify and add one.</span>
+        
+        <span class="c"># Look up the info from the Spotify metadata API</span>
+        <span class="n">track_info</span> <span class="o">=</span> <span class="n">track_info_from_spotify_url</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">track_info</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="n">track</span> <span class="o">=</span> <span class="n">Track</span><span class="p">(</span><span class="o">**</span><span class="n">track_info</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">track</span> <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">track</span> <span class="o">=</span> <span class="n">existing_tracks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">track</span>
+</div>
+<div class="viewcode-block" id="track_from_mpd_search_results"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.track_from_mpd_search_results">[docs]</a><span class="k">def</span> <span class="nf">track_from_mpd_search_results</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">,</span> <span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a Track object from the MPD metadata associated with the given Spotify URI.</span>
+
+<span class="sd">    :param spotify_url: The Spotify URL of the track to get metadata for</span>
+<span class="sd">    :type spotify_url: string</span>
+<span class="sd">    :param mpd: The MPD server from which to retrieve the metadata</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :returns: A :class:`Track` with the metadata from ``spotify_url``</span>
+<span class="sd">    :rtype: :class:`Track`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">existing_tracks</span> <span class="o">=</span> <span class="n">Track</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Track</span><span class="o">.</span><span class="n">spotify_url</span> <span class="o">==</span> <span class="n">spotify_url</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_tracks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">track_info</span> <span class="o">=</span> <span class="n">track_info_from_mpd_search_results</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">,</span> <span class="n">mpd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">track_info</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        
+        <span class="n">track</span> <span class="o">=</span> <span class="n">Track</span><span class="p">(</span><span class="o">**</span><span class="n">track_info</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">track</span> <span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">track</span> <span class="o">=</span> <span class="n">existing_tracks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">track</span>
+
+</div>
+<div class="viewcode-block" id="track_info_from_mpd_search_results"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.track_info_from_mpd_search_results">[docs]</a><span class="k">def</span> <span class="nf">track_info_from_mpd_search_results</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">,</span> <span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns metadata for the given spotify_url from the specified MPD server.</span>
+
+<span class="sd">    :param spotify_url: The Spotify URL of the track to get metadata for</span>
+<span class="sd">    :type spotify_url: string</span>
+<span class="sd">    :param mpd: The MPD server from which to retrieve the metadata</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    :returns: Metadata about the ``spotify_url``</span>
+<span class="sd">    :rtype: dictionary(string,string)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span> <span class="n">spotify_url</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">track_info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">],</span>
+        <span class="s">&#39;artist&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;artist&#39;</span><span class="p">],</span>
+        <span class="s">&#39;album&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;album&#39;</span><span class="p">],</span>
+        <span class="s">&#39;spotify_url&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">],</span>
+        <span class="s">&#39;date&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;date&#39;</span><span class="p">],</span>
+        <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">track_info</span>
+</div>
+<div class="viewcode-block" id="track_info_from_spotify_url"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.track_info_from_spotify_url">[docs]</a><span class="k">def</span> <span class="nf">track_info_from_spotify_url</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns track information from the Spotify metadata API from the given Spotify URI.</span>
+
+<span class="sd">    :param spotify_url: The Spotify URL of the track to get metadata for</span>
+<span class="sd">    :type spotify_url: string</span>
+<span class="sd">    :returns: A dictionary with the metadata from ``spotify_url``</span>
+<span class="sd">    :rtype: dictionary(string, string)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spotify_request_url</span> <span class="o">=</span> <span class="s">&quot;http://ws.spotify.com/lookup/1/.json?uri=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">spotify_url</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">raw_response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">spotify_request_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">HTTPError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">raw_response</span><span class="p">)</span>
+
+    <span class="c"># TODO: When this becomes a JSON response, chain together dict references using .get and check for Nones at the end</span>
+    <span class="n">track_info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;track&#39;</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
+        <span class="s">&#39;artist&#39;</span><span class="p">:</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">artist</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">artist</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;track&#39;</span><span class="p">][</span><span class="s">&#39;artists&#39;</span><span class="p">]),</span>
+        <span class="s">&#39;album&#39;</span><span class="p">:</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;track&#39;</span><span class="p">][</span><span class="s">&#39;album&#39;</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
+        <span class="s">&#39;spotify_url&#39;</span><span class="p">:</span> <span class="n">spotify_url</span><span class="p">,</span>
+        <span class="s">&#39;date&#39;</span><span class="p">:</span> <span class="n">_raw_info_from_spotify_url</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s">&#39;track&#39;</span><span class="p">][</span><span class="s">&#39;album&#39;</span><span class="p">][</span><span class="s">&#39;href&#39;</span><span class="p">])[</span><span class="s">&#39;album&#39;</span><span class="p">][</span><span class="s">&#39;released&#39;</span><span class="p">],</span>
+        <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;track&#39;</span><span class="p">][</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">track_info</span>
+</div>
+<span class="k">def</span> <span class="nf">_raw_info_from_spotify_url</span><span class="p">(</span><span class="n">spotify_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets a raw response from the Spotify metadata API for a given URI</span>
+
+<span class="sd">    :param spotify_url: The Spotify URL to look up</span>
+<span class="sd">    :type: string</span>
+<span class="sd">    :returns: The raw response from the Spotify metadata API</span>
+<span class="sd">    :rtype: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spotify_request_url</span> <span class="o">=</span> <span class="s">&quot;http://ws.spotify.com/lookup/1/.json?uri=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">spotify_url</span>
+    <span class="n">raw_response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">spotify_request_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">raw_response</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span>
+
+<span class="nd">@with_mpd</span>
+<div class="viewcode-block" id="ensure_mpd_playlist_consistency"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.ensure_mpd_playlist_consistency">[docs]</a><span class="k">def</span> <span class="nf">ensure_mpd_playlist_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A wrapper for _ensure_mpd_playlist_consistency that grabs an MPD client.&quot;&quot;&quot;</span>
+    <span class="n">_ensure_mpd_playlist_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+</div>
+<span class="nd">@with_mpd_lock</span>
+<span class="k">def</span> <span class="nf">_ensure_mpd_playlist_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Responsible for ensuring that the Partify play queue database table is in sync with the Mopidy play queue.</span>
+
+<span class="sd">    This function should ensure consistency according to the following criteria:</span>
+<span class="sd">    * The Mopidy playlist is authoritative.</span>
+<span class="sd">    * The function should be lightweight and should not make undue modifications to the database.</span>
+
+<span class="sd">    The function first checks to make sure there are no :class:`PlayQueueEntry`s that have mpd_ids that are</span>
+<span class="sd">    no longer in the MPD play queue. If there are, remove those :class:`PlayQueueEntry`s.</span>
+<span class="sd">    Then the playback_priority of each :class:`PlayQueueEntry` is adjusted to reflect the MPD queue.</span>
+<span class="sd">    Next, the selection scheme corresponding to the &#39;SELECTION_SCHEME&#39; configuration value is run. Note that this</span>
+<span class="sd">    function is likely to only make one modification to the MPD queue, which will cause a cascading playlist change</span>
+<span class="sd">    event which will trigger this function again (through :func:`on_playlist_update`).</span>
+<span class="sd">    Finally the player state is checked for consistency and corrected if inconsistent.</span>
+
+<span class="sd">    :param mpd: The MPD client used to manipulate the MPD queue</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">playlist_tracks</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">playlistinfo</span><span class="p">()</span>
+    <span class="n">playlist_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">track</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">playlist_tracks</span><span class="p">]</span>
+
+    <span class="c"># Purge all the database entries that don&#39;t have IDs present</span>
+    <span class="n">purge_entries</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">not_</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">mpd_id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">playlist_ids</span><span class="p">)))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">purge_entry</span> <span class="ow">in</span> <span class="n">purge_entries</span><span class="p">:</span>
+        <span class="c"># Remove the votes for this track, too</span>
+        <span class="n">votes</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe_id</span> <span class="o">==</span> <span class="n">purge_entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">votes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">phe</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">pqe</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">purge_entry</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c"># Next, make sure that we have a database entry for each track in the MPD queue</span>
+    <span class="k">for</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">playlist_tracks</span><span class="p">:</span>
+        <span class="c"># This could cause some undue load on the database. We can do this in memory if it&#39;s too intensive to be doing DB calls</span>
+        <span class="n">queue_track</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">mpd_id</span> <span class="o">==</span> <span class="n">track</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="c"># Don&#39;t need to worry about dups since this field is unique in the DB</span>
+
+        <span class="k">if</span> <span class="n">queue_track</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Do some checking here to make sure that all of the information is correct...</span>
+            <span class="c"># Ensure that the playback position is correct</span>
+            <span class="n">queue_track</span><span class="o">.</span><span class="n">playback_priority</span> <span class="o">=</span> <span class="n">track</span><span class="p">[</span><span class="s">&#39;pos&#39;</span><span class="p">]</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">queue_track</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># We need to add the track to the Partify representation of the Play Queue</span>
+            <span class="n">new_track</span> <span class="o">=</span> <span class="n">track_from_spotify_url</span><span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">])</span>
+            <span class="n">new_track_entry</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="p">(</span><span class="n">track</span><span class="o">=</span><span class="n">new_track</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mpd_id</span><span class="o">=</span><span class="n">track</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">],</span> <span class="n">playback_priority</span><span class="o">=</span><span class="n">track</span><span class="p">[</span><span class="s">&#39;pos&#39;</span><span class="p">])</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_track_entry</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c"># Ensure that the playlist&#39;s order follows the configured selection method</span>
+    <span class="n">db_tracks</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_tracks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">selection_method</span> <span class="o">=</span> <span class="n">get_selection_scheme</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SELECTION_SCHEME&#39;</span><span class="p">])</span>
+        <span class="n">selection_method</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">)</span>
+
+    <span class="n">_ensure_mpd_player_state_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+
+    <span class="n">status</span> <span class="o">=</span> <span class="n">_get_status</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">status</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ipc</span><span class="o">.</span><span class="n">get_desired_player_state</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">tn_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">ipc</span><span class="o">.</span><span class="n">get_desired_player_state</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">tn_fn</span><span class="p">()</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        
+
+<span class="k">def</span> <span class="nf">_ensure_mpd_player_state_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ensure that the Mopidy server&#39;s options are consistent with options that make sense for Partify.</span>
+
+<span class="sd">    :param mpd: The MPD client used to manipulate the MPD queue</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ideal_player_state</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;consume&#39;</span><span class="p">:</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;random&#39;</span><span class="p">:</span> <span class="s">&#39;0&#39;</span><span class="p">,</span> <span class="s">&#39;repeat&#39;</span><span class="p">:</span> <span class="s">&#39;0&#39;</span><span class="p">,</span> <span class="s">&#39;single&#39;</span><span class="p">:</span> <span class="s">&#39;0&#39;</span><span class="p">}</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">_get_status</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">option</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ideal_player_state</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">status</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">option_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span>
+            <span class="n">option_method</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_update_track_history</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Responsible for making sure that the currently playing track gets logged to the track history.</span>
+
+<span class="sd">    :param mpd: The MPD client used to manipulate the MPD queue</span>
+<span class="sd">    :type mpd: ``MPDClient``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c"># Get the currently playing track</span>
+    <span class="n">currently_playing_track</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">currently_playing_track</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">history_entry</span> <span class="o">=</span> <span class="n">PlayHistoryEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span> 
+            <span class="n">and_</span><span class="p">(</span><span class="n">PlayHistoryEntry</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">currently_playing_track</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+                <span class="n">PlayHistoryEntry</span><span class="o">.</span><span class="n">track</span> <span class="o">==</span> <span class="n">currently_playing_track</span><span class="o">.</span><span class="n">track</span> 
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">history_entry</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Add this to the play history</span>
+            <span class="n">history_entry</span> <span class="o">=</span> <span class="n">PlayHistoryEntry</span><span class="p">(</span><span class="n">track</span> <span class="o">=</span> <span class="n">currently_playing_track</span><span class="o">.</span><span class="n">track</span><span class="p">,</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">currently_playing_track</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">history_entry</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+            <span class="c"># Transfer all the votes from the the PQE to the PHE</span>
+            <span class="k">for</span> <span class="n">vote</span> <span class="ow">in</span> <span class="n">Vote</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Vote</span><span class="o">.</span><span class="n">pqe</span> <span class="o">==</span> <span class="n">currently_playing_track</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">vote</span><span class="o">.</span><span class="n">phe</span> <span class="o">=</span> <span class="n">history_entry</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="nd">@with_mpd</span>
+<div class="viewcode-block" id="on_playlist_update"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.on_playlist_update">[docs]</a><span class="k">def</span> <span class="nf">on_playlist_update</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The subprocess that continuously IDLEs against the Mopidy server and ensures playlist consistency on playlist update.&quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">changed</span> <span class="o">=</span> <span class="n">mpd</span><span class="o">.</span><span class="n">idle</span><span class="p">()</span>
+        <span class="c">#app.logger.debug(&quot;Received change event from Mopidy: %s&quot; % changed)</span>
+        <span class="k">if</span> <span class="s">&#39;playlist&#39;</span> <span class="ow">in</span> <span class="n">changed</span><span class="p">:</span>
+            <span class="n">_ensure_mpd_playlist_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+            <span class="n">_update_track_history</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;options&#39;</span> <span class="ow">in</span> <span class="n">changed</span><span class="p">:</span>
+            <span class="n">_ensure_mpd_player_state_consistency</span><span class="p">(</span><span class="n">mpd</span><span class="p">)</span>
+
+        <span class="c"># Update the dict which assists caching</span>
+        <span class="k">for</span> <span class="n">changed_system</span> <span class="ow">in</span> <span class="n">changed</span><span class="p">:</span>
+            <span class="n">ipc</span><span class="o">.</span><span class="n">update_time</span><span class="p">(</span><span class="s">&#39;playlist&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+            <span class="c">#app.logger.debug(ipc.get_time(&#39;playlist&#39;))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../partify.html" >partify</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

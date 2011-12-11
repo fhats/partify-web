@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Queue &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module Reference" href="index.html" />
+    <link rel="next" title="Selection" href="selection.html" />
+    <link rel="prev" title="Privileges" href="priv.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selection.html" title="Selection"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="priv.html" title="Privileges"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="priv.html"
+                        title="previous chapter">Privileges</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="selection.html"
+                        title="next chapter">Selection</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/modules/queue.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-partify.queue">
+<span id="queue"></span><h1>Queue<a class="headerlink" href="#module-partify.queue" title="Permalink to this headline">¶</a></h1>
+<p>Provides endpoints for queue management as well as synchronization
+of the queue with the MPD server.</p>
+<dl class="function">
+<dt id="partify.queue.add_album_from_track">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">add_album_from_track</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_album_from_track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.add_album_from_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a Spotify track URL, finds its corresponding album, and adds it to the user&#8217;s queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spotify_files</strong> (<em>list of strings</em>) &#8211; a list of spotify urls of the tracks in the album to add</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request and the user&#8217;s queue.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/queue/add_album</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.add_to_queue">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">add_to_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_to_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.add_to_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a Spotify URL and adds it to the current play queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spotify_uri</strong> (<em>string</em>) &#8211; The spotify URI of the track to add</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request, the user&#8217;s queue, and the spotify url of the track added.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/queue/add</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.add_track_from_spotify_url">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">add_track_from_spotify_url</tt><big>(</big><em>mpd</em>, <em>spotify_url</em>, <em>user_id=None</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_track_from_spotify_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.add_track_from_spotify_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a track to the user&#8217;s queue from the specified spotify URL.
+If user_id is None then the current user is assumed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mpd</strong> (<tt class="docutils literal"><span class="pre">MPDClient</span></tt>) &#8211; The MPD instance to add the track to</li>
+<li><strong>spotify_url</strong> (<em>string</em>) &#8211; The Spotify URL of the track</li>
+<li><strong>user_id</strong> (<em>integer</em>) &#8211; The ID of the <tt class="xref py py-class docutils literal"><span class="pre">User</span></tt> to add the track for</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The <tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt> of the <tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt> that was added</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.ensure_mpd_playlist_consistency">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">ensure_mpd_playlist_consistency</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#ensure_mpd_playlist_consistency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.ensure_mpd_playlist_consistency" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for _ensure_mpd_playlist_consistency that grabs an MPD client.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.list_user_queue">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">list_user_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#list_user_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.list_user_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the user&#8217;s queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The status of the request and the user&#8217;s queue.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/queue/list</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.on_playlist_update">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">on_playlist_update</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#on_playlist_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.on_playlist_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>The subprocess that continuously IDLEs against the Mopidy server and ensures playlist consistency on playlist update.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.remove_from_queue">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">remove_from_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#remove_from_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.remove_from_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the specified track from the user&#8217;s play queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>track_id</strong> (<em>integer</em>) &#8211; The ID of <tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt> to remove</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request and the user&#8217;s queue</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/queue/remove</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.reorder_queue">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">reorder_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#reorder_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.reorder_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reorders the user&#8217;s play queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>track_list</strong> (<em>dictionary(integer, integer)</em>) &#8211; A dictionary with keys of :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>PlayQueueEntry`s to be moved and
+values that are the positions to move the queue entry to.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request and the user&#8217;s queue</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON String</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/queue/reorder</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.track_from_mpd_search_results">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">track_from_mpd_search_results</tt><big>(</big><em>spotify_url</em>, <em>mpd</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#track_from_mpd_search_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.track_from_mpd_search_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Track object from the MPD metadata associated with the given Spotify URI.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>spotify_url</strong> (<em>string</em>) &#8211; The Spotify URL of the track to get metadata for</li>
+<li><strong>mpd</strong> (<tt class="docutils literal"><span class="pre">MPDClient</span></tt>) &#8211; The MPD server from which to retrieve the metadata</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt> with the metadata from <tt class="docutils literal"><span class="pre">spotify_url</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.track_from_spotify_url">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">track_from_spotify_url</tt><big>(</big><em>spotify_url</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#track_from_spotify_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.track_from_spotify_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Track object from the Spotify metadata associated with the given Spotify URI.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spotify_url</strong> (<em>string</em>) &#8211; The Spotify URL of the track to get metadata for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt> with the metadata from <tt class="docutils literal"><span class="pre">spotify_url</span></tt></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">Track</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.track_info_from_mpd_search_results">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">track_info_from_mpd_search_results</tt><big>(</big><em>spotify_url</em>, <em>mpd</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#track_info_from_mpd_search_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.track_info_from_mpd_search_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns metadata for the given spotify_url from the specified MPD server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>spotify_url</strong> (<em>string</em>) &#8211; The Spotify URL of the track to get metadata for</li>
+<li><strong>mpd</strong> (<tt class="docutils literal"><span class="pre">MPDClient</span></tt>) &#8211; The MPD server from which to retrieve the metadata</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Metadata about the <tt class="docutils literal"><span class="pre">spotify_url</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dictionary(string,string)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="partify.queue.track_info_from_spotify_url">
+<tt class="descclassname">partify.queue.</tt><tt class="descname">track_info_from_spotify_url</tt><big>(</big><em>spotify_url</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#track_info_from_spotify_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.track_info_from_spotify_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns track information from the Spotify metadata API from the given Spotify URI.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spotify_url</strong> (<em>string</em>) &#8211; The Spotify URL of the track to get metadata for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary with the metadata from <tt class="docutils literal"><span class="pre">spotify_url</span></tt></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dictionary(string, string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="selection.html" title="Selection"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="priv.html" title="Privileges"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
