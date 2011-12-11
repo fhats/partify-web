@@ -1,2 +1,2 @@
-web: python app.py
+web: sudo python app.py
 
