@@ -8,6 +8,6 @@ if __name__ == "__main__":
 	(r"/", tornado.web.RedirectHandler, {"url": "https://github.com/fxh32/partify/wiki"}),
 	(r"/install", tornado.web.RedirectHandler, {"url": "https://github.com/fxh32/partify/wiki/Installation"}),
     ])
-    application.listen(80)
+    application.listen(8080)
     tornado.ioloop.IOLoop.instance().start()
 
