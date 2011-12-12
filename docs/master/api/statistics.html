@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
-    <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="user.html" />
+    <link rel="up" title="API Documentation" href="index.html" />
+    <link rel="next" title="Module Reference" href="../modules/index.html" />
     <link rel="prev" title="History" href="history.html" /> 
   </head>
   <body>
@@ -41,13 +41,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="user.html" title="&lt;no title&gt;"
+          <a href="../modules/index.html" title="Module Reference"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="history.html" title="History"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">API Documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -64,8 +64,8 @@
   <p class="topless"><a href="history.html"
                         title="previous chapter">History</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="user.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+  <p class="topless"><a href="../modules/index.html"
+                        title="next chapter">Module Reference</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/statistics.txt"
@@ -93,12 +93,23 @@
           <div class="body">
             
   <div class="section" id="statistics">
-<h1>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id1">Statistics</a><a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#statistics" id="id1">Statistics</a><ul>
+<li><a class="reference internal" href="#getting-statistics" id="id2">Getting Statistics</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="getting-statistics">
-<h2>Getting Statistics<a class="headerlink" href="#getting-statistics" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Getting Statistics</a><a class="headerlink" href="#getting-statistics" title="Permalink to this headline">¶</a></h2>
+<p>A set of statistics about the player history can be retrieved from <a class="reference internal" href="../modules/statistics.html#partify.statistics.statistics" title="partify.statistics.statistics"><tt class="xref py py-func docutils literal"><span class="pre">/statistics</span></tt></a> . Statistics for the last day, week, month, year, and for
+all time will be returned.</p>
 <dl class="function">
-<dt id="partify.statistics.statistics">
-<tt class="descclassname">partify.statistics.</tt><tt class="descname">statistics</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/partify/statistics.html#statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.statistics.statistics" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.statistics.</tt><tt class="descname">statistics</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/partify/statistics.html#statistics"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Provides some statistics about the <a class="reference internal" href="../modules/models.html#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">partify.models.PlayHistoryEntry</span></tt></a> in the database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -115,6 +126,347 @@ The statistics are divided up into segments by time.</td>
 <p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
 </dd></dl>
 
+<p><strong>Examples</strong></p>
+<div class="highlight-python"><pre>GET /statistics HTTP/1.1</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="s">&quot;ok&quot;</span><span class="p">,</span>
+  <span class="s">&quot;statistics&quot;</span><span class="p">:{</span>
+    <span class="s">&quot;week&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;total_time&quot;</span><span class="p">:</span><span class="mf">96778.54400000005</span><span class="p">,</span>
+      <span class="s">&quot;total_tracks&quot;</span><span class="p">:</span><span class="mi">378</span><span class="p">,</span>
+      <span class="s">&quot;top_albums&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Hybrid Theory&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Linkin Park&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Good Apollo, I&#39;m Burning Star IV, Volume One:  From Fear Through The Eyes Of Madness&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;The Second Stage Turbine Blade&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Mind Elevation&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">13</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_users&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;littlelizzy&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">165</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;fred&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">70</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;sjotp&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">63</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Steve Johnson&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;tlg14&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">51</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Tyler&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_artists&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">38</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">37</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">34</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;God Is An Astronaut&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Linkin Park&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s">&quot;all&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;total_time&quot;</span><span class="p">:</span><span class="mf">170454.3739999996</span><span class="p">,</span>
+      <span class="s">&quot;total_tracks&quot;</span><span class="p">:</span><span class="mi">711</span><span class="p">,</span>
+      <span class="s">&quot;top_albums&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;xx&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">22</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The xx&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Welcome To The Night Sky&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Wintersleep&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Good Apollo, I&#39;m Burning Star IV, Volume One:  From Fear Through The Eyes Of Madness&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;The First Collection 2005-2006&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Lemuria&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_users&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;fred&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">289</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;littlelizzy&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">177</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;tlg14&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">117</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Tyler&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;sjotp&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">63</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Steve Johnson&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_artists&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">41</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">37</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">34</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;God Is An Astronaut&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Lemuria&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s">&quot;month&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;total_time&quot;</span><span class="p">:</span><span class="mf">170454.3739999996</span><span class="p">,</span>
+      <span class="s">&quot;total_tracks&quot;</span><span class="p">:</span><span class="mi">711</span><span class="p">,</span>
+      <span class="s">&quot;top_albums&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;xx&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">22</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The xx&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Welcome To The Night Sky&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Wintersleep&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Good Apollo, I&#39;m Burning Star IV, Volume One:  From Fear Through The Eyes Of Madness&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;The First Collection 2005-2006&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Lemuria&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_users&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;fred&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">289</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;littlelizzy&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">177</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;tlg14&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">117</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Tyler&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;sjotp&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">63</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Steve Johnson&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_artists&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">41</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">37</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">34</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;God Is An Astronaut&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Lemuria&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s">&quot;day&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;total_time&quot;</span><span class="p">:</span><span class="mf">22698.194000000003</span><span class="p">,</span>
+      <span class="s">&quot;total_tracks&quot;</span><span class="p">:</span><span class="mi">89</span><span class="p">,</span>
+      <span class="s">&quot;top_albums&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Mind Elevation&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">13</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Passive Me, Aggressive You&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The Naked And Famous&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Thought So</span><span class="se">\u2026</span><span class="s">&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Carboot Soul&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_users&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;littlelizzy&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;sjotp&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">23</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Steve Johnson&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;fred&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">21</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;tlg14&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Tyler&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_artists&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">37</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The Naked And Famous&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Manchester Orchestra&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s">&quot;year&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;total_time&quot;</span><span class="p">:</span><span class="mf">170454.3739999996</span><span class="p">,</span>
+      <span class="s">&quot;total_tracks&quot;</span><span class="p">:</span><span class="mi">711</span><span class="p">,</span>
+      <span class="s">&quot;top_albums&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;xx&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">22</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The xx&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Welcome To The Night Sky&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Wintersleep&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Good Apollo, I&#39;m Burning Star IV, Volume One:  From Fear Through The Eyes Of Madness&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;The First Collection 2005-2006&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Lemuria&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_users&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;fred&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">289</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;littlelizzy&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">177</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;tlg14&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">117</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Tyler&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;username&quot;</span><span class="p">:</span><span class="s">&quot;sjotp&quot;</span><span class="p">,</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">63</span><span class="p">,</span>
+          <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Steve Johnson&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s">&quot;top_artists&quot;</span><span class="p">:{</span>
+        <span class="s">&quot;1&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">41</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Coheed and Cambria&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;2&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">37</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Nightmares On Wax&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;3&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">34</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;God Is An Astronaut&quot;</span>
+        <span class="p">},</span>
+        <span class="s">&quot;4&quot;</span><span class="p">:{</span>
+          <span class="s">&quot;plays&quot;</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span>
+          <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Lemuria&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s">&quot;response_time&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T05:21:38.777453&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -134,13 +486,13 @@ The statistics are divided up into segments by time.</td>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="user.html" title="&lt;no title&gt;"
+          <a href="../modules/index.html" title="Module Reference"
              >next</a> |</li>
         <li class="right" >
           <a href="history.html" title="History"
              >previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+          <li><a href="index.html" >API Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

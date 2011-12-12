@@ -26,9 +26,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
-    <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="history.html" />
-    <link rel="prev" title="Search" href="search.html" /> 
+    <link rel="up" title="API Documentation" href="index.html" />
+    <link rel="next" title="History" href="history.html" />
+    <link rel="prev" title="Searching" href="search.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,13 +41,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="history.html" title="&lt;no title&gt;"
+          <a href="history.html" title="History"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="search.html" title="Search"
+          <a href="search.html" title="Searching"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">API Documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -65,10 +65,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="search.html"
-                        title="previous chapter">Search</a></p>
+                        title="previous chapter">Searching</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="history.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+                        title="next chapter">History</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/vote.txt"
@@ -96,18 +96,32 @@
           <div class="body">
             
   <div class="section" id="voting">
-<h1>Voting<a class="headerlink" href="#voting" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id1">Voting</a><a class="headerlink" href="#voting" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#voting" id="id1">Voting</a><ul>
+<li><a class="reference internal" href="#getting-the-user-s-vote-status" id="id2">Getting the User&#8217;s Vote Status</a></li>
+<li><a class="reference internal" href="#voting-a-track-up" id="id3">Voting a Track Up</a></li>
+<li><a class="reference internal" href="#voting-a-track-down" id="id4">Voting a Track Down</a></li>
+<li><a class="reference internal" href="#getting-the-vote-score-for-a-track" id="id5">Getting the Vote Score for a Track</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="getting-the-user-s-vote-status">
-<h2>Getting the User&#8217;s Vote Status<a class="headerlink" href="#getting-the-user-s-vote-status" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Getting the User&#8217;s Vote Status</a><a class="headerlink" href="#getting-the-user-s-vote-status" title="Permalink to this headline">¶</a></h2>
+<p>To find out what a User&#8217;s vote (if any) on a track is, use the <a class="reference internal" href="../modules/vote.html#partify.vote.vote_status" title="partify.vote.vote_status"><tt class="xref py py-func docutils literal"><span class="pre">/vote/status</span></tt></a> endpoint. The endpoint will return <tt class="docutils literal"><span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">-1</span></tt>,
+or <tt class="docutils literal"><span class="pre">0</span></tt> if the user has voted the track up, down, or has not voted yet (respectively).</p>
 <dl class="function">
-<dt id="partify.vote.vote_status">
-<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_status</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.vote.vote_status" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_status</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_status"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Gets the logged-in user&#8217;s vote status for a certain track.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pqe</strong> (<em>integer</em>) &#8211; The ID of the PlayQueueEntry</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pqe</strong> (<em>integer</em>) &#8211; The ID of the <a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request and the direction of any existing vote.</td>
 </tr>
@@ -119,20 +133,37 @@
 <p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
 </dd></dl>
 
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A user cannot vote on a track he or she has queued; therefore, a user also cannot get his or her vote status on a track queued by him or her.</p>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python"><pre>GET /vote/status?pqe=5 HTTP/1.1</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;ok&quot;</span><span class="p">,</span>
+  <span class="s">&quot;direction&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="voting-a-track-up">
-<h2>Voting a Track Up<a class="headerlink" href="#voting-a-track-up" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Voting a Track Up</a><a class="headerlink" href="#voting-a-track-up" title="Permalink to this headline">¶</a></h2>
+<p>To vote a track up when a selection scheme that supports voting is enabled, send a <tt class="docutils literal"><span class="pre">POST</span></tt> to <a class="reference internal" href="../modules/vote.html#partify.vote.vote_up" title="partify.vote.vote_up"><tt class="xref py py-func docutils literal"><span class="pre">/vote/up</span></tt></a> with the ID of the
+<a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a> to vote on.</p>
 <dl class="function">
-<dt id="partify.vote.vote_up">
-<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_up</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.vote.vote_up" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_up</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_up"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Records a vote in the up direction for the logged-in user.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The status of the request.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pqe</strong> (<em>integer</em>) &#8211; The ID of the <a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
 </tr>
 </tbody>
 </table>
@@ -140,20 +171,38 @@
 <p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
 </dd></dl>
 
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A user may not vote on a track her or she has queued.</p>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python"><pre>POST /vote/up HTTP/1.1
+
+pqe: 5</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;ok&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="voting-a-track-down">
-<h2>Voting a Track Down<a class="headerlink" href="#voting-a-track-down" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Voting a Track Down</a><a class="headerlink" href="#voting-a-track-down" title="Permalink to this headline">¶</a></h2>
+<p>To vote a track down when a selection scheme that supports voting is enabled, send a <tt class="docutils literal"><span class="pre">POST</span></tt> to <a class="reference internal" href="../modules/vote.html#partify.vote.vote_down" title="partify.vote.vote_down"><tt class="xref py py-func docutils literal"><span class="pre">/vote/down</span></tt></a> with the ID of the
+<a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a> to vote on.</p>
 <dl class="function">
-<dt id="partify.vote.vote_down">
-<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_down</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.vote.vote_down" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_down</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_down"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Records a vote in the down direction for the logged-in user.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The status of the request.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pqe</strong> (<em>integer</em>) &#8211; The ID of the <a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The status of the request.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON string</td>
 </tr>
 </tbody>
 </table>
@@ -161,10 +210,71 @@
 <p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">POST</span></tt></p>
 </dd></dl>
 
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A user may not vote on a track her or she has queued.</p>
+</div>
+<p><strong>Example</strong></p>
+<div class="highlight-python"><pre>POST /vote/down HTTP/1.1
+
+pqe: 5</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;ok&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="getting-the-vote-score-for-a-track">
-<h2>Getting the Vote Score for a Track<a class="headerlink" href="#getting-the-vote-score-for-a-track" title="Permalink to this headline">¶</a></h2>
-<p>..autofunction:: partify.vote.vote_total</p>
+<h2><a class="toc-backref" href="#id5">Getting the Vote Score for a Track</a><a class="headerlink" href="#getting-the-vote-score-for-a-track" title="Permalink to this headline">¶</a></h2>
+<p>The total vote score of a <a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a> or <a class="reference internal" href="../modules/models.html#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayHistoryEntry</span></tt></a> may be retrieved by all users from the
+<a class="reference internal" href="../modules/vote.html#partify.vote.vote_total" title="partify.vote.vote_total"><tt class="xref py py-func docutils literal"><span class="pre">/vote/total</span></tt></a> endpoint.</p>
+<dl class="function">
+<dt>
+<tt class="descclassname">partify.vote.</tt><tt class="descname">vote_total</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/partify/vote.html#vote_total"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Retreives the total vote score for the specified track. One of pqe or phe must be 
+specified, but not both.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pqe</strong> (<em>integer, optional</em>) &#8211; The ID of the <a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a></li>
+<li><strong>phe</strong> (<em>integer, optional</em>) &#8211; The ID of the <a class="reference internal" href="../modules/models.html#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayHistoryEntry</span></tt></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The status of the request and the total vote score of the specified track.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">JSON string</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Route:</strong> <tt class="docutils literal"><span class="pre">/vote/total</span></tt></p>
+<p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
+</dd></dl>
+
+<p><strong>Examples</strong></p>
+<p>For a <a class="reference internal" href="../modules/models.html#partify.models.PlayQueueEntry" title="partify.models.PlayQueueEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayQueueEntry</span></tt></a></p>
+<div class="highlight-python"><pre>GET /vote/total?pqe=5 HTTP/1.1</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;ok&quot;</span><span class="p">,</span>
+  <span class="s">&quot;total&quot;</span><span class="p">:</span> <span class="mi">6</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For a <a class="reference internal" href="../modules/models.html#partify.models.PlayHistoryEntry" title="partify.models.PlayHistoryEntry"><tt class="xref py py-class docutils literal"><span class="pre">PlayHistoryEntry</span></tt></a></p>
+<div class="highlight-python"><pre>GET /vote/total?phe=5 HTTP/1.1</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;ok&quot;</span><span class="p">,</span>
+  <span class="s">&quot;total&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">4</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -184,13 +294,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="history.html" title="&lt;no title&gt;"
+          <a href="history.html" title="History"
              >next</a> |</li>
         <li class="right" >
-          <a href="search.html" title="Search"
+          <a href="search.html" title="Searching"
              >previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+          <li><a href="index.html" >API Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

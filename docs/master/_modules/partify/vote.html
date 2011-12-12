@@ -98,10 +98,10 @@
 
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/status&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
 <span class="nd">@with_authentication</span>
-<div class="viewcode-block" id="vote_status"><a class="viewcode-back" href="../../api/vote.html#partify.vote.vote_status">[docs]</a><span class="k">def</span> <span class="nf">vote_status</span><span class="p">():</span>
+<div class="viewcode-block" id="vote_status"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_status">[docs]</a><span class="k">def</span> <span class="nf">vote_status</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Gets the logged-in user&#39;s vote status for a certain track.</span>
 
-<span class="sd">    :param pqe: The ID of the PlayQueueEntry</span>
+<span class="sd">    :param pqe: The ID of the :class:`~partify.models.PlayQueueEntry`</span>
 <span class="sd">    :type pqe: integer</span>
 <span class="sd">    :returns: The status of the request and the direction of any existing vote.</span>
 <span class="sd">    :rtype: JSON string </span>
@@ -123,9 +123,11 @@
 </div>
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/up&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@with_authentication</span>
-<div class="viewcode-block" id="vote_up"><a class="viewcode-back" href="../../api/vote.html#partify.vote.vote_up">[docs]</a><span class="k">def</span> <span class="nf">vote_up</span><span class="p">():</span>
+<div class="viewcode-block" id="vote_up"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_up">[docs]</a><span class="k">def</span> <span class="nf">vote_up</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Records a vote in the up direction for the logged-in user.</span>
-
+<span class="sd">    </span>
+<span class="sd">    :param pqe: The ID of the :class:`~partify.models.PlayQueueEntry`</span>
+<span class="sd">    :type pqe: integer</span>
 <span class="sd">    :returns: The status of the request.</span>
 <span class="sd">    :rtype: JSON string </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -149,9 +151,11 @@
 </div>
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/vote/down&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@with_authentication</span>
-<div class="viewcode-block" id="vote_down"><a class="viewcode-back" href="../../api/vote.html#partify.vote.vote_down">[docs]</a><span class="k">def</span> <span class="nf">vote_down</span><span class="p">():</span>
+<div class="viewcode-block" id="vote_down"><a class="viewcode-back" href="../../modules/vote.html#partify.vote.vote_down">[docs]</a><span class="k">def</span> <span class="nf">vote_down</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Records a vote in the down direction for the logged-in user.</span>
 
+<span class="sd">    :param pqe: The ID of the :class:`~partify.models.PlayQueueEntry`</span>
+<span class="sd">    :type pqe: integer</span>
 <span class="sd">    :returns: The status of the request.</span>
 <span class="sd">    :rtype: JSON string </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -178,9 +182,9 @@
     <span class="sd">&quot;&quot;&quot;Retreives the total vote score for the specified track. One of pqe or phe must be </span>
 <span class="sd">    specified, but not both.</span>
 
-<span class="sd">    :param pqe: The ID of the PlayQueueEntry</span>
+<span class="sd">    :param pqe: The ID of the :class:`~partify.models.PlayQueueEntry`</span>
 <span class="sd">    :type pqe: integer, optional</span>
-<span class="sd">    :param phe: The ID of the PlayHistoryEntry</span>
+<span class="sd">    :param phe: The ID of the :class:`~partify.models.PlayHistoryEntry`</span>
 <span class="sd">    :type phe: integer, optional</span>
 <span class="sd">    :returns: The status of the request and the total vote score of the specified track.</span>
 <span class="sd">    :rtype: JSON string</span>

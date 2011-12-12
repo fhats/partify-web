@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
-    <link rel="up" title="API Reference" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="search.html" />
+    <link rel="up" title="API Documentation" href="index.html" />
+    <link rel="next" title="Searching" href="search.html" />
     <link rel="prev" title="Player" href="player.html" /> 
   </head>
   <body>
@@ -41,13 +41,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="search.html" title="&lt;no title&gt;"
+          <a href="search.html" title="Searching"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="player.html" title="Player"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">API Documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -69,7 +69,7 @@
                         title="previous chapter">Player</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="search.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+                        title="next chapter">Searching</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/queue.txt"
@@ -113,15 +113,15 @@
 </div>
 <div class="section" id="getting-the-global-queue">
 <h2><a class="toc-backref" href="#id2">Getting the Global Queue</a><a class="headerlink" href="#getting-the-global-queue" title="Permalink to this headline">¶</a></h2>
-<p>Typically the global play queue is retrieved through the use of <a class="reference internal" href="player.html#partify.player.status" title="partify.player.status"><tt class="xref py py-func docutils literal"><span class="pre">/player/status/poll</span></tt></a> by setting the parameter <tt class="docutils literal"><span class="pre">current</span></tt> to none. For more
+<p>Typically the global play queue is retrieved through the use of <a class="reference internal" href="../modules/player.html#partify.player.status" title="partify.player.status"><tt class="xref py py-func docutils literal"><span class="pre">/player/status/poll</span></tt></a> by setting the parameter <tt class="docutils literal"><span class="pre">current</span></tt> to none. For more
 information, see <a class="reference internal" href="player.html#api-get-player-status"><em>Getting Player Status</em></a>.</p>
 </div>
 <div class="section" id="getting-the-user-s-queue">
 <h2><a class="toc-backref" href="#id3">Getting the User&#8217;s Queue</a><a class="headerlink" href="#getting-the-user-s-queue" title="Permalink to this headline">¶</a></h2>
-<p>The user&#8217;s queue can be retrieved by utilizing either the <a class="reference internal" href="player.html#partify.player.status" title="partify.player.status"><tt class="xref py py-func docutils literal"><span class="pre">/player/status/poll</span></tt></a> or <a class="reference internal" href="#partify.queue.list_user_queue" title="partify.queue.list_user_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/list</span></tt></a> endpoints.</p>
+<p>The user&#8217;s queue can be retrieved by utilizing either the <a class="reference internal" href="../modules/player.html#partify.player.status" title="partify.player.status"><tt class="xref py py-func docutils literal"><span class="pre">/player/status/poll</span></tt></a> or <a class="reference internal" href="../modules/queue.html#partify.queue.list_user_queue" title="partify.queue.list_user_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/list</span></tt></a> endpoints.</p>
 <dl class="function">
-<dt id="partify.queue.list_user_queue">
-<tt class="descclassname">partify.queue.</tt><tt class="descname">list_user_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#list_user_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.list_user_queue" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.queue.</tt><tt class="descname">list_user_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#list_user_queue"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Gets the user&#8217;s queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -278,10 +278,10 @@ information, see <a class="reference internal" href="player.html#api-get-player-
 </div>
 <div class="section" id="adding-tracks-to-the-queue">
 <h2><a class="toc-backref" href="#id4">Adding Tracks to the Queue</a><a class="headerlink" href="#adding-tracks-to-the-queue" title="Permalink to this headline">¶</a></h2>
-<p>Tracks are added to the user&#8217;s play queue using the <a class="reference internal" href="#partify.queue.add_to_queue" title="partify.queue.add_to_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/add</span></tt></a> or <a class="reference internal" href="#partify.queue.add_album_from_track" title="partify.queue.add_album_from_track"><tt class="xref py py-func docutils literal"><span class="pre">/queue/add_album</span></tt></a> endpoints.</p>
+<p>Tracks are added to the user&#8217;s play queue using the <a class="reference internal" href="../modules/queue.html#partify.queue.add_to_queue" title="partify.queue.add_to_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/add</span></tt></a> or <a class="reference internal" href="../modules/queue.html#partify.queue.add_album_from_track" title="partify.queue.add_album_from_track"><tt class="xref py py-func docutils literal"><span class="pre">/queue/add_album</span></tt></a> endpoints.</p>
 <dl class="function">
-<dt id="partify.queue.add_to_queue">
-<tt class="descclassname">partify.queue.</tt><tt class="descname">add_to_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_to_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.add_to_queue" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.queue.</tt><tt class="descname">add_to_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_to_queue"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Takes a Spotify URL and adds it to the current play queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -300,8 +300,8 @@ information, see <a class="reference internal" href="player.html#api-get-player-
 </dd></dl>
 
 <dl class="function">
-<dt id="partify.queue.add_album_from_track">
-<tt class="descclassname">partify.queue.</tt><tt class="descname">add_album_from_track</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_album_from_track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.add_album_from_track" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.queue.</tt><tt class="descname">add_album_from_track</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#add_album_from_track"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Takes a list of Spotify track URLs corresponding to an album and adds them to the user&#8217;s play queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -709,7 +709,7 @@ spotify_files:spotify:track:39O0msKxtwkPSb3bCvbrBq</pre>
 </div>
 <div class="section" id="reordering-the-user-s-queue">
 <h2><a class="toc-backref" href="#id5">Reordering the User&#8217;s Queue</a><a class="headerlink" href="#reordering-the-user-s-queue" title="Permalink to this headline">¶</a></h2>
-<p>The user&#8217;s queue can be re-ordered by issuing a <tt class="docutils literal"><span class="pre">POST</span></tt> to <a class="reference internal" href="#partify.queue.reorder_queue" title="partify.queue.reorder_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/reorder</span></tt></a> with a list of track:position mappings in the request body.
+<p>The user&#8217;s queue can be re-ordered by issuing a <tt class="docutils literal"><span class="pre">POST</span></tt> to <a class="reference internal" href="../modules/queue.html#partify.queue.reorder_queue" title="partify.queue.reorder_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/reorder</span></tt></a> with a list of track:position mappings in the request body.
 The new positions will be updated in the database and will be updated in the Mopidy play queue on the next round of consistency checking.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -717,8 +717,8 @@ The new positions will be updated in the database and will be updated in the Mop
 priority in the user&#8217;s queue (this is what the built-in client currently does).</p>
 </div>
 <dl class="function">
-<dt id="partify.queue.reorder_queue">
-<tt class="descclassname">partify.queue.</tt><tt class="descname">reorder_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#reorder_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.reorder_queue" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.queue.</tt><tt class="descname">reorder_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#reorder_queue"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Reorders the user&#8217;s play queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -955,10 +955,10 @@ values that are the positions to move the queue entry to.</td>
 </div>
 <div class="section" id="removing-tracks-from-the-queue">
 <h2><a class="toc-backref" href="#id6">Removing Tracks from the Queue</a><a class="headerlink" href="#removing-tracks-from-the-queue" title="Permalink to this headline">¶</a></h2>
-<p>Tracks can be removed from the user&#8217;s play queue by sending the queue entry&#8217;s ID in a <tt class="docutils literal"><span class="pre">POST</span></tt> request to <a class="reference internal" href="#partify.queue.remove_from_queue" title="partify.queue.remove_from_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/remove</span></tt></a>.</p>
+<p>Tracks can be removed from the user&#8217;s play queue by sending the queue entry&#8217;s ID in a <tt class="docutils literal"><span class="pre">POST</span></tt> request to <a class="reference internal" href="../modules/queue.html#partify.queue.remove_from_queue" title="partify.queue.remove_from_queue"><tt class="xref py py-func docutils literal"><span class="pre">/queue/remove</span></tt></a>.</p>
 <dl class="function">
-<dt id="partify.queue.remove_from_queue">
-<tt class="descclassname">partify.queue.</tt><tt class="descname">remove_from_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#remove_from_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.queue.remove_from_queue" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.queue.</tt><tt class="descname">remove_from_queue</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/queue.html#remove_from_queue"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Removes the specified track from the user&#8217;s play queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1199,13 +1199,13 @@ track_id:140</pre>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="search.html" title="&lt;no title&gt;"
+          <a href="search.html" title="Searching"
              >next</a> |</li>
         <li class="right" >
           <a href="player.html" title="Player"
              >previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+          <li><a href="index.html" >API Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

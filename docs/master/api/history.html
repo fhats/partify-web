@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
-    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="up" title="API Documentation" href="index.html" />
     <link rel="next" title="Statistics" href="statistics.html" />
     <link rel="prev" title="Voting" href="vote.html" /> 
   </head>
@@ -47,7 +47,7 @@
           <a href="vote.html" title="Voting"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">API Documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -93,12 +93,23 @@
           <div class="body">
             
   <div class="section" id="history">
-<h1>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id1">History</a><a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#history" id="id1">History</a><ul>
+<li><a class="reference internal" href="#getting-the-track-play-history" id="id2">Getting the Track Play History</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="getting-the-track-play-history">
-<h2>Getting the Track Play History<a class="headerlink" href="#getting-the-track-play-history" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Getting the Track Play History</a><a class="headerlink" href="#getting-the-track-play-history" title="Permalink to this headline">¶</a></h2>
+<p>The play history can be retrieved via <a class="reference internal" href="../modules/history.html#partify.history.history" title="partify.history.history"><tt class="xref py py-func docutils literal"><span class="pre">/history</span></tt></a>. Pagination is supported through the arguments <tt class="docutils literal"><span class="pre">ipp</span></tt>, which specifies the number of items per
+page of results, and <tt class="docutils literal"><span class="pre">page</span></tt>, which specifies which page of results to get.</p>
 <dl class="function">
-<dt id="partify.history.history">
-<tt class="descclassname">partify.history.</tt><tt class="descname">history</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/partify/history.html#history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.history.history" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.history.</tt><tt class="descname">history</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/partify/history.html#history"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>An endpoint that provides playback history.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -122,6 +133,120 @@
 <p><strong>Methods:</strong> <tt class="docutils literal"><span class="pre">GET</span></tt></p>
 </dd></dl>
 
+<p><strong>Example</strong></p>
+<div class="highlight-python"><pre>GET /history?ipp=10&amp;page=1 HTTP/1.1</pre>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="s">&quot;ok&quot;</span><span class="p">,</span>
+  <span class="s">&quot;tracks&quot;</span><span class="p">:[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">318.52</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T01:00:26.646041&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Ambulance For The Ambience&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">711</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">429.733</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:53:16.147733&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Da Da Da Da&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">710</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">233.707</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:41:07.001820&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;hHallmark&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">709</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">422.747</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:34:04.241076&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Weddings&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">708</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">237.307</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:30:06.692572&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Market Fresh&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">707</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">37.12</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:29:28.743612&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Untitled&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">706</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Bee Hives&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">307.053</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:24:47.266041&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Time = Cause&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2004&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Broken Social Scene&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">705</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Passive Me, Aggressive You&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">109.107</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:21:41.342349&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;The Ends&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2011&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The Naked And Famous&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">704</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Find Me a Drink Home&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">190.64</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:18:30.502348&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;Stop Now&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2009&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;Cheap Girls&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">703</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;album&quot;</span><span class="p">:</span><span class="s">&quot;Passive Me, Aggressive You&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mf">194.36</span><span class="p">,</span>
+      <span class="s">&quot;time_played&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T00:15:15.912172&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span><span class="p">:</span><span class="s">&quot;Lizzy &quot;</span><span class="p">,</span>
+      <span class="s">&quot;title&quot;</span><span class="p">:</span><span class="s">&quot;A Wolf In Geek&#39;s Clothing&quot;</span><span class="p">,</span>
+      <span class="s">&quot;date&quot;</span><span class="p">:</span><span class="s">&quot;2011&quot;</span><span class="p">,</span>
+      <span class="s">&quot;artist&quot;</span><span class="p">:</span><span class="s">&quot;The Naked And Famous&quot;</span><span class="p">,</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="mi">702</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s">&quot;num_items&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+  <span class="s">&quot;pages&quot;</span><span class="p">:</span><span class="mi">72</span><span class="p">,</span>
+  <span class="s">&quot;response_time&quot;</span><span class="p">:</span><span class="s">&quot;2011-12-12T05:21:38.966400&quot;</span><span class="p">,</span>
+  <span class="s">&quot;page&quot;</span><span class="p">:</span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -147,7 +272,7 @@
           <a href="vote.html" title="Voting"
              >previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+          <li><a href="index.html" >API Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

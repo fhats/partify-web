@@ -118,7 +118,7 @@
 <span class="nd">@with_authentication</span>
 <span class="nd">@with_mpd</span>
 <span class="nd">@with_mpd_lock</span>
-<div class="viewcode-block" id="add_to_queue"><a class="viewcode-back" href="../../api/queue.html#partify.queue.add_to_queue">[docs]</a><span class="k">def</span> <span class="nf">add_to_queue</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+<div class="viewcode-block" id="add_to_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.add_to_queue">[docs]</a><span class="k">def</span> <span class="nf">add_to_queue</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Takes a Spotify URL and adds it to the current play queue.</span>
 
 <span class="sd">    :param spotify_uri: The spotify URI of the track to add</span>
@@ -140,8 +140,8 @@
 <span class="nd">@with_authentication</span>
 <span class="nd">@with_mpd</span>
 <span class="nd">@with_mpd_lock</span>
-<div class="viewcode-block" id="add_album_from_track"><a class="viewcode-back" href="../../api/queue.html#partify.queue.add_album_from_track">[docs]</a><span class="k">def</span> <span class="nf">add_album_from_track</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Takes a Spotify track URL, finds its corresponding album, and adds it to the user&#39;s queue.</span>
+<div class="viewcode-block" id="add_album_from_track"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.add_album_from_track">[docs]</a><span class="k">def</span> <span class="nf">add_album_from_track</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Takes a list of Spotify track URLs corresponding to an album and adds them to the user&#39;s play queue.</span>
 
 <span class="sd">    :param spotify_files: a list of spotify urls of the tracks in the album to add</span>
 <span class="sd">    :type spotify_files: list of strings</span>
@@ -163,7 +163,7 @@
 <span class="nd">@with_authentication</span>
 <span class="nd">@with_mpd</span>
 <span class="nd">@with_mpd_lock</span>
-<div class="viewcode-block" id="remove_from_queue"><a class="viewcode-back" href="../../api/queue.html#partify.queue.remove_from_queue">[docs]</a><span class="k">def</span> <span class="nf">remove_from_queue</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_from_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.remove_from_queue">[docs]</a><span class="k">def</span> <span class="nf">remove_from_queue</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Removes the specified track from the user&#39;s play queue.</span>
 <span class="sd">    </span>
 <span class="sd">    :param track_id: The ID of :class:`PlayQueueEntry` to remove</span>
@@ -196,7 +196,7 @@
 </div>
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/reorder&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@with_authentication</span>
-<div class="viewcode-block" id="reorder_queue"><a class="viewcode-back" href="../../api/queue.html#partify.queue.reorder_queue">[docs]</a><span class="k">def</span> <span class="nf">reorder_queue</span><span class="p">():</span>
+<div class="viewcode-block" id="reorder_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.reorder_queue">[docs]</a><span class="k">def</span> <span class="nf">reorder_queue</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Reorders the user&#39;s play queue.</span>
 
 <span class="sd">    :param track_list: A dictionary with keys of :class:`partify.models.PlayQueueEntry` to be moved and</span>
@@ -228,7 +228,7 @@
 </div>
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/queue/list&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
 <span class="nd">@with_authentication</span>
-<div class="viewcode-block" id="list_user_queue"><a class="viewcode-back" href="../../api/queue.html#partify.queue.list_user_queue">[docs]</a><span class="k">def</span> <span class="nf">list_user_queue</span><span class="p">():</span>
+<div class="viewcode-block" id="list_user_queue"><a class="viewcode-back" href="../../modules/queue.html#partify.queue.list_user_queue">[docs]</a><span class="k">def</span> <span class="nf">list_user_queue</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Gets the user&#39;s queue.</span>
 
 <span class="sd">    :returns: The status of the request and the user&#39;s queue.</span>

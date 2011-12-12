@@ -26,9 +26,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
-    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="up" title="API Documentation" href="index.html" />
     <link rel="next" title="Queue Management" href="queue.html" />
-    <link rel="prev" title="API Reference" href="index.html" /> 
+    <link rel="prev" title="API Documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="queue.html" title="Queue Management"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="API Reference"
+          <a href="index.html" title="API Documentation"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">API Reference</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">API Documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -62,7 +62,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">API Reference</a></p>
+                        title="previous chapter">API Documentation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="queue.html"
                         title="next chapter">Queue Management</a></p>
@@ -93,18 +93,27 @@
           <div class="body">
             
   <div class="section" id="player">
-<h1>Player<a class="headerlink" href="#player" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id1">Player</a><a class="headerlink" href="#player" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#player" id="id1">Player</a><ul>
+<li><a class="reference internal" href="#getting-player-status" id="id2">Getting Player Status</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="getting-player-status">
-<span id="api-get-player-status"></span><h2>Getting Player Status<a class="headerlink" href="#getting-player-status" title="Permalink to this headline">¶</a></h2>
-<p>Clients can retrieve Partify player status information by sending a <tt class="docutils literal"><span class="pre">GET</span></tt> to the endpoint <a class="reference internal" href="#partify.player.status" title="partify.player.status"><tt class="xref py py-func docutils literal"><span class="pre">/player/status/poll</span></tt></a>. The parameter <tt class="docutils literal"><span class="pre">current</span></tt> can be used
+<span id="api-get-player-status"></span><h2><a class="toc-backref" href="#id2">Getting Player Status</a><a class="headerlink" href="#getting-player-status" title="Permalink to this headline">¶</a></h2>
+<p>Clients can retrieve Partify player status information by sending a <tt class="docutils literal"><span class="pre">GET</span></tt> to the endpoint <a class="reference internal" href="../modules/player.html#partify.player.status" title="partify.player.status"><tt class="xref py py-func docutils literal"><span class="pre">/player/status/poll</span></tt></a>. The parameter <tt class="docutils literal"><span class="pre">current</span></tt> can be used
 to save bandwidth and processing by indicating that the client has a recent version of the global and user play queues and that it does not need to be updated.
 <tt class="docutils literal"><span class="pre">current</span></tt> should be set as a float corresponding to a timestamp in seconds of the time the last playlist update was received. If the playlist has been
 updated since <tt class="docutils literal"><span class="pre">current</span></tt>, the global and user play queues will be sent. If <tt class="docutils literal"><span class="pre">current</span></tt> is omitted the current user and global play queues are sent to the client.</p>
 <p>The built-in Partify client hits this endpoint every 3 seconds to maintain synchronization. Updating too frequently may flood the server and cause Partify
 to become unresponsive.</p>
 <dl class="function">
-<dt id="partify.player.status">
-<tt class="descclassname">partify.player.</tt><tt class="descname">status</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/player.html#status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partify.player.status" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">partify.player.</tt><tt class="descname">status</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/partify/player.html#status"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>An endpoint for poll-based player status updates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -238,54 +247,6 @@ or was before the time of the last playlist update.</td>
       <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
       <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
     <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="s">&quot;Maladroit&quot;</span><span class="p">,</span>
-      <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;fred&quot;</span><span class="p">,</span>
-      <span class="s">&quot;playback_priority&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-      <span class="s">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="s">&quot;Weezer&quot;</span><span class="p">,</span>
-      <span class="s">&quot;spotify_url&quot;</span><span class="p">:</span> <span class="s">&quot;spotify:track:6E6rY8reP0d4HU0xDiC264&quot;</span><span class="p">,</span>
-      <span class="s">&quot;length&quot;</span><span class="p">:</span> <span class="mf">158.56</span><span class="p">,</span>
-      <span class="s">&quot;mpd_id&quot;</span><span class="p">:</span> <span class="mi">106</span><span class="p">,</span>
-      <span class="s">&quot;user_priority&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-      <span class="s">&quot;date&quot;</span><span class="p">:</span> <span class="s">&quot;2002&quot;</span><span class="p">,</span>
-      <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Death And Destruction&quot;</span><span class="p">,</span>
-      <span class="s">&quot;time_added&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Dec 11 20:07:08 2011&quot;</span><span class="p">,</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-      <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="s">&quot;Heart&quot;</span><span class="p">,</span>
-      <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;fred&quot;</span><span class="p">,</span>
-      <span class="s">&quot;playback_priority&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-      <span class="s">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="s">&quot;Stars&quot;</span><span class="p">,</span>
-      <span class="s">&quot;spotify_url&quot;</span><span class="p">:</span> <span class="s">&quot;spotify:track:6LDYVzxjDSAO92UZ5veM3u&quot;</span><span class="p">,</span>
-      <span class="s">&quot;length&quot;</span><span class="p">:</span> <span class="mf">243.147</span><span class="p">,</span>
-      <span class="s">&quot;mpd_id&quot;</span><span class="p">:</span> <span class="mi">107</span><span class="p">,</span>
-      <span class="s">&quot;user_priority&quot;</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
-      <span class="s">&quot;date&quot;</span><span class="p">:</span> <span class="s">&quot;2003&quot;</span><span class="p">,</span>
-      <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Elevator Love Letter&quot;</span><span class="p">,</span>
-      <span class="s">&quot;time_added&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Dec 11 20:08:17 2011&quot;</span><span class="p">,</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
-      <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="s">&quot;Champ&quot;</span><span class="p">,</span>
-      <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;fred&quot;</span><span class="p">,</span>
-      <span class="s">&quot;playback_priority&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-      <span class="s">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="s">&quot;Tokyo Police Club&quot;</span><span class="p">,</span>
-      <span class="s">&quot;spotify_url&quot;</span><span class="p">:</span> <span class="s">&quot;spotify:track:4Hu4EbfAOFltkX4unAOPpM&quot;</span><span class="p">,</span>
-      <span class="s">&quot;length&quot;</span><span class="p">:</span> <span class="mf">158.173</span><span class="p">,</span>
-      <span class="s">&quot;mpd_id&quot;</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
-      <span class="s">&quot;user_priority&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-      <span class="s">&quot;date&quot;</span><span class="p">:</span> <span class="s">&quot;2010&quot;</span><span class="p">,</span>
-      <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Favourite Colour&quot;</span><span class="p">,</span>
-      <span class="s">&quot;time_added&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Dec 11 20:09:28 2011&quot;</span><span class="p">,</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-      <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
-    <span class="p">}</span>
   <span class="p">],</span>
   <span class="s">&quot;consume&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span>
   <span class="s">&quot;pqe_id&quot;</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
@@ -373,54 +334,7 @@ or was before the time of the last playlist update.</td>
       <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
       <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
     <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="s">&quot;Maladroit&quot;</span><span class="p">,</span>
-      <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;fred&quot;</span><span class="p">,</span>
-      <span class="s">&quot;playback_priority&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-      <span class="s">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="s">&quot;Weezer&quot;</span><span class="p">,</span>
-      <span class="s">&quot;spotify_url&quot;</span><span class="p">:</span> <span class="s">&quot;spotify:track:6E6rY8reP0d4HU0xDiC264&quot;</span><span class="p">,</span>
-      <span class="s">&quot;length&quot;</span><span class="p">:</span> <span class="mf">158.56</span><span class="p">,</span>
-      <span class="s">&quot;mpd_id&quot;</span><span class="p">:</span> <span class="mi">106</span><span class="p">,</span>
-      <span class="s">&quot;user_priority&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-      <span class="s">&quot;date&quot;</span><span class="p">:</span> <span class="s">&quot;2002&quot;</span><span class="p">,</span>
-      <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Death And Destruction&quot;</span><span class="p">,</span>
-      <span class="s">&quot;time_added&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Dec 11 20:07:08 2011&quot;</span><span class="p">,</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
-      <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="s">&quot;Heart&quot;</span><span class="p">,</span>
-      <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;fred&quot;</span><span class="p">,</span>
-      <span class="s">&quot;playback_priority&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-      <span class="s">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="s">&quot;Stars&quot;</span><span class="p">,</span>
-      <span class="s">&quot;spotify_url&quot;</span><span class="p">:</span> <span class="s">&quot;spotify:track:6LDYVzxjDSAO92UZ5veM3u&quot;</span><span class="p">,</span>
-      <span class="s">&quot;length&quot;</span><span class="p">:</span> <span class="mf">243.147</span><span class="p">,</span>
-      <span class="s">&quot;mpd_id&quot;</span><span class="p">:</span> <span class="mi">107</span><span class="p">,</span>
-      <span class="s">&quot;user_priority&quot;</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
-      <span class="s">&quot;date&quot;</span><span class="p">:</span> <span class="s">&quot;2003&quot;</span><span class="p">,</span>
-      <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Elevator Love Letter&quot;</span><span class="p">,</span>
-      <span class="s">&quot;time_added&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Dec 11 20:08:17 2011&quot;</span><span class="p">,</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
-      <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="s">&quot;album&quot;</span><span class="p">:</span> <span class="s">&quot;Champ&quot;</span><span class="p">,</span>
-      <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;fred&quot;</span><span class="p">,</span>
-      <span class="s">&quot;playback_priority&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-      <span class="s">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;artist&quot;</span><span class="p">:</span> <span class="s">&quot;Tokyo Police Club&quot;</span><span class="p">,</span>
-      <span class="s">&quot;spotify_url&quot;</span><span class="p">:</span> <span class="s">&quot;spotify:track:4Hu4EbfAOFltkX4unAOPpM&quot;</span><span class="p">,</span>
-      <span class="s">&quot;length&quot;</span><span class="p">:</span> <span class="mf">158.173</span><span class="p">,</span>
-      <span class="s">&quot;mpd_id&quot;</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
-      <span class="s">&quot;user_priority&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-      <span class="s">&quot;date&quot;</span><span class="p">:</span> <span class="s">&quot;2010&quot;</span><span class="p">,</span>
-      <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="s">&quot;Favourite Colour&quot;</span><span class="p">,</span>
-      <span class="s">&quot;time_added&quot;</span><span class="p">:</span> <span class="s">&quot;Sun Dec 11 20:09:28 2011&quot;</span><span class="p">,</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-      <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span>
-    <span class="p">}</span>
+
   <span class="p">],</span>
   <span class="s">&quot;single&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span>
   <span class="s">&quot;repeat&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span>
@@ -459,10 +373,10 @@ or was before the time of the last playlist update.</td>
           <a href="queue.html" title="Queue Management"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="API Reference"
+          <a href="index.html" title="API Documentation"
              >previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
-          <li><a href="index.html" >API Reference</a> &raquo;</li> 
+          <li><a href="index.html" >API Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

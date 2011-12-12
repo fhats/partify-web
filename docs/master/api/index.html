@@ -112,10 +112,15 @@ services that interact with Partify.</p>
 HTTP status code is OK, the response will typically contain a <tt class="docutils literal"><span class="pre">status</span></tt> member in the root of the response, which indicates the status of the request. This can be either <tt class="docutils literal"><span class="pre">ok</span></tt> or <tt class="docutils literal"><span class="pre">error</span></tt>.
 If <tt class="docutils literal"><span class="pre">status</span></tt> is <tt class="docutils literal"><span class="pre">error</span></tt> then a <tt class="docutils literal"><span class="pre">message</span></tt> field will also exist in the root of the response describing the error that occurred. If <tt class="docutils literal"><span class="pre">status</span></tt> is OK, the rest of the response is dependent
 on the endpoint returning the response.</p>
+<p>Some API features require authentication. There is no JSON API for User authentication right now, so the best you can do is login via the <a class="reference internal" href="../modules/user.html#partify.user.login_post" title="partify.user.login_post"><tt class="xref py py-func docutils literal"><span class="pre">/login</span></tt></a> endpoint and
+store the cookie that is handed back to you upon successful authentication. A full JSON authentication API should be available from v0.5 onwards.</p>
 </div>
 <div class="section" id="concepts">
 <h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
-<p>User queue vs global queue etc.</p>
+<p>Some terms are referenced throughout the API documentation that you&#8217;ll need to understand for the docs to make sense. Those terms are described here.</p>
+<p>Partify segregates the queue data into two different kinds of queues. A <strong>user queue</strong> is simply a queue of tracks belonging to the user that they would like to hear, ranked chronologically.
+The <strong>party queue</strong> is the global queue which mimicks the contents of the Mopidy playback queue and into which tracks from <strong>user queues</strong> are placed, ordered by whatever selection scheme
+is chosen in the <tt class="docutils literal"><span class="pre">SELECTION_SCHEME</span></tt> configuration variable.</p>
 </div>
 <div class="section" id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
@@ -133,7 +138,7 @@ on the endpoint returning the response.</p>
 <li class="toctree-l2"><a class="reference internal" href="queue.html#removing-tracks-from-the-queue">Removing Tracks from the Queue</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="search.html">Search</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="search.html">Searching</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="search.html#searching-the-library">Searching the Library</a></li>
 </ul>
 </li>
