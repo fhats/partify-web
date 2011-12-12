@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="User Manual" href="index.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="User Manual" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="User Manual"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">User Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#the-easy-way">The Easy Way</a></li>
+<li><a class="reference internal" href="#the-hard-er-way">The Hard(er) Way</a></li>
+<li><a class="reference internal" href="#from-source">From Source</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">User Manual</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="configuration.html"
+                        title="next chapter">Configuration</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_manual/installation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>This page is intended to help you get started using Partify. If you have any problems or questions, please don&#8217;t hesitate to email me at <a class="reference external" href="mailto:fred&#46;hatfull&#37;&#52;&#48;gmail&#46;com">fred<span>&#46;</span>hatfull<span>&#64;</span>gmail<span>&#46;</span>com</a> or to join <tt class="docutils literal"><span class="pre">#partify</span></tt> on <a class="reference external" href="http://freenode.net/">irc.freenode.net</a>.</p>
+<p>Installation is roughly divided into two paths: <a class="reference internal" href="#user-manual-installation-easy-way"><em>The Easy Way</em></a> and <a class="reference internal" href="#user-manual-installation-hard-way"><em>The Hard(er) Way</em></a>
+(developers can get started with the latest source by reading <a class="reference internal" href="#user-manual-installation-from-source"><em>From Source</em></a>).</p>
+<div class="section" id="the-easy-way">
+<span id="user-manual-installation-easy-way"></span><h2>The Easy Way<a class="headerlink" href="#the-easy-way" title="Permalink to this headline">¶</a></h2>
+<p>Installation of Partify and Mopidy on Ubuntu Linux systems is as easy as running an automated shell script. This script is currently targeted toward Ubuntu systems and is only tested against Ubuntu 11.04 (but should work in theory with any recent Ubuntu version). For installation on other operating systems, see <a class="reference internal" href="#user-manual-installation-hard-way"><em>The Hard(er) Way</em></a>.</p>
+<p>To install Partify on Ubuntu, simply run the following command in a terminal:</p>
+<div class="highlight-python"><pre>wget http://partify.us/static/scripts/install_ubuntu.sh ; chmod +x ./install_ubuntu.sh ; sudo ./install_ubuntu.sh</pre>
+</div>
+<p>The script will download and install <a class="reference external" href="http://www.mopidy.com">Mopidy</a>, the music player that does the heavy lifting of streaming music from Spotify; download and install the tools needed to install Partify; prompt you for your <a class="reference external" href="http://www.spotify.com/us/get-spotify/overview/">Spotify Premium</a> account details; set up Mopidy and Partify to run when Ubuntu starts up; and starts Mopidy and Partify.</p>
+<p>Congratulations! You are almost ready to start jamming! After you have run the installation script you should point your web browser at <a class="reference external" href="http://127.0.0.1:5000/">http://127.0.0.1:5000/</a> proceed to the <a class="reference internal" href="configuration.html"><em>Configuration</em></a> page.</p>
+<p>For technical individuals, a few notes about this script:</p>
+<ul class="simple">
+<li>Much to your anticipated chagrin, the Spotify username and password provided by this script are eventually <strong>stored in plaintext</strong>. This is a limitation of Mopidy, as it needs to read the username and password out of an internal configuration file that this script sets up for you. A fortunate mitigation of this issue is that the authentication credentials are stored in /root, a directory that is by default read-protected from users that are not root and don&#8217;t have sudo. While this is no substitute for a properly protected password, I cannot work around this limitation right now. In the near future this will probably be fixed by the Mopidy maintainers.</li>
+<li>This script sets up Mopidy and Partify to be running as root. This is not ideal but was the fastest way to get an easy distribution solution working, and is a tradeoff that was made under the assumption that the vast majority of installations would be on local networks. That said, Partify is not hardened in terms of security and by default serves from the built-in server included with Flask. <strong>If your system is public-facing</strong>, make sure to disallow non-local connections on the port Partify is running on (by default 5000) and set up the server to use the Tornado server (see <a class="reference internal" href="configuration.html"><em>Configuration</em></a>). If you choose to allow connections from non-local hosts to Partify, do so <strong>at your own risk!</strong></li>
+<li>Along the same lines, Partify installs all of its dependencies as system packages, not in a virtualenv. This is done to simplify installation. This is frowned upon by many Pythonistas, but if you are one of those people then you probably won&#8217;t obejct to <a class="reference internal" href="#user-manual-installation-hard-way"><em>The Hard(er) Way</em></a> any way.</li>
+</ul>
+</div>
+<div class="section" id="the-hard-er-way">
+<span id="user-manual-installation-hard-way"></span><h2>The Hard(er) Way<a class="headerlink" href="#the-hard-er-way" title="Permalink to this headline">¶</a></h2>
+<p>Partify itself is not too difficult to install, but Mopidy may present other challenges. This guide assumes you have a working Mopidy server running, and will only cover Partify installation. For details on getting Mopidy set up and running, see the <a class="reference external" href="http://www.mopidy.com/docs/master/">Mopidy documentation</a>.</p>
+<p>The first thing you should do is make sure that you are running a version of Python needed to run Partify. You can check this by opening a terminal and typing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">python</span> <span class="o">--</span><span class="n">version</span>
+</pre></div>
+</div>
+<p>You should get a response that looks something like <tt class="docutils literal"><span class="pre">Python</span> <span class="pre">2.7.1</span></tt>. If the number reported by this command is less than 2.6, you should upgrade to a later version of Python, which can be downloaded from <a class="reference external" href="http://python.org/download/">the Python website</a>.</p>
+<p>Installing Partify and its dependencies is not, in fact, difficult. If you are looking for the most painless install method, simply install Partify using <tt class="docutils literal"><span class="pre">easy_install</span></tt> as root:</p>
+<div class="highlight-python"><pre>sudo easy_install partify</pre>
+</div>
+<p>or on Windows:</p>
+<div class="highlight-python"><pre>easy_install partify</pre>
+</div>
+<p>Note that doing so will install Partify and its dependencies as system packages, which may not be ideal if you are running projects which use different versions of Partify&#8217;s dependencies. To avoid this one can use a virtualenv, which is documented at its <a class="reference external" href="http://pypi.python.org/pypi/virtualenv">PyPI page</a>. If you aren&#8217;t sure how to do this or aren&#8217;t sure if you have any installed applications that will conflict with Partify, simply try the command above.</p>
+<p>You will now have a new application on your system called <tt class="docutils literal"><span class="pre">run_partify</span></tt>. Executing this command will start Partify. This command can be wrapped in initialization scripts that are pertinent to your operating system in order to start Partify when your computer starts. Example Ubuntu upstart scripts can be found at <a class="reference external" href="http://partify.us/static/scripts/partify.conf">http://partify.us/static/scripts/partify.conf</a> and <a class="reference external" href="http://partify.us/static/scripts/mopidy.conf">http://partify.us/static/scripts/mopidy.conf</a></p>
+<p>Execute <tt class="docutils literal"><span class="pre">run_partify</span></tt>, point your web browser at <a class="reference external" href="http://127.0.0.1:5000/">http://127.0.0.1:5000/</a> , and head on over to the <a class="reference internal" href="configuration.html"><em>Configuration</em></a> page.</p>
+</div>
+<div class="section" id="from-source">
+<span id="user-manual-installation-from-source"></span><h2>From Source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h2>
+<p>Partify can also be installed from source if you want to be running the latest, potentially unstable code. This section is intended for people who know what they are doing; if you aren&#8217;t comfortable with the procedure outlined here, trying installing <a class="reference internal" href="#user-manual-installation-easy-way"><em>The Easy Way</em></a> or <a class="reference internal" href="#user-manual-installation-hard-way"><em>The Hard(er) Way</em></a>. To my knowledge this only works on OSX/Linux at this time, but I&#8217;m sure it could be made to work for Windows. Getting Coffeescript to work on Windows can be finnicky and you&#8217;ll need some version of make, but otherwise everything <em>should</em> run fine on Windows...</p>
+<p><strong>What You Need</strong></p>
+<ul class="simple">
+<li>git</li>
+<li>python 2.6 or later</li>
+<li>python setuptools</li>
+</ul>
+<p><strong>Install the Dependencies</strong></p>
+<p>Either in a virtualenv or as root, install the following Python packages:</p>
+<ul class="simple">
+<li>Flask</li>
+<li>Flask-WTF</li>
+<li>Flask-SQLAlchemy</li>
+<li>Tornado</li>
+</ul>
+<div class="highlight-python"><pre>easy_install flask flask-sqlalchemy flask-wtf tornado</pre>
+</div>
+<p>Next, install Coffeescript. To do so, you need Node.js:</p>
+<p>(from <a class="reference external" href="http://nodejs.org/#download">http://nodejs.org/#download</a>)</p>
+<div class="highlight-python"><pre>mkdir ~/sources
+cd ~/sources
+git clone git://github.com/joyent/node.git
+cd node
+git checkout v0.4.11
+export JOBS=2
+mkdir ~/local
+./configure --prefix=$HOME/local/node
+make
+make install
+echo 'export PATH=$HOME/local/node/bin:$PATH' &gt;&gt; ~/.profile
+echo 'export NODE_PATH=$HOME/local/node:$HOME/local/node/lib/node_modules' &gt;&gt; ~/.profile
+source ~/.profile</pre>
+</div>
+<p>Install NPM, the Node.js Package Manager</p>
+<p>(from <a class="reference external" href="http://npmjs.org/">http://npmjs.org/</a>)</p>
+<div class="highlight-python"><pre>curl http://npmjs.org/install.sh | sh</pre>
+</div>
+<p>Finally, install Coffeescript</p>
+<div class="highlight-python"><pre>npm install -g coffee-script</pre>
+</div>
+<p><strong>Download the Source</strong></p>
+<p>Make a directory where you can keep the Partify source and change to it. I call mine <cite>sources</cite>:</p>
+<div class="highlight-python"><pre>mkdir ~/sources
+cd ~/sources</pre>
+</div>
+<p>Download the source from the Partify git repository:</p>
+<div class="highlight-python"><pre>git clone git://github.com/fxh32/partify.git</pre>
+</div>
+<p><strong>Pick your version</strong></p>
+<p>By default, the master branch of the repository will be checked out. For different versions of the code, check out a different branch:</p>
+<ul class="simple">
+<li><cite>master</cite> - Contains the latest stable code from the last version milestone.</li>
+<li><cite>develop</cite> - Contains the latest semi-stable code that has been committed towards the next milestone. Typically ahead of <cite>master</cite> and has branches folded into it when they close issues. Generally usable but not guaranteed not to break things.</li>
+<li><cite>&lt;name&gt;_&lt;issue_number&gt;</cite> - a branch containing work on the issue <cite>&lt;name&gt;</cite> with issue number <cite>&lt;issue_number&gt;</cite>. Very likely to break things if <cite>&lt;issue_number&gt;</cite> has not been closed yet</li>
+</ul>
+<div class="highlight-python"><pre>git checkout (master|develop|&lt;name&gt;_&lt;issue_number&gt;)</pre>
+</div>
+<p>Of course, you can at any time make sure you are up to date with the latest code on Github by issuing</p>
+<div class="highlight-python"><pre>git pull</pre>
+</div>
+<p><strong>Run Partify</strong></p>
+<p>The last step that needs to happen before you can run Partify is compilation of the Coffeescript into Javascript assets. This can be done by simply issuing</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">make</span>
+</pre></div>
+</div>
+<p>You can now run Partify!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">run_partify</span>
+</pre></div>
+</div>
+<p><em>Please note: the preceding instruction to install Partify from source were compiled from memory and should be fairly accurate; however, if you spot any discrepancies or have any trouble, please let me know.</em></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="User Manual"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >User Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

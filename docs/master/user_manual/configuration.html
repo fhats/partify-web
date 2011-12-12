@@ -1,0 +1,173 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &mdash; Partify 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
+    <link rel="up" title="User Manual" href="index.html" />
+    <link rel="next" title="Upgrading" href="upgrading.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="upgrading.html" title="Upgrading"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">User Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#stuff-you-ll-need-to-change">Stuff You&#8217;ll Need to Change</a></li>
+<li><a class="reference internal" href="#stuff-you-might-want-to-change">Stuff You Might Want to Change</a></li>
+<li><a class="reference internal" href="#stuff-you-shouldn-t-change">Stuff You Shouldn&#8217;t Change</a></li>
+<li><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="upgrading.html"
+                        title="next chapter">Upgrading</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/user_manual/configuration.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>The following document is intended to provide a guide to configuring Partify to use in a home environment.</p>
+<p><strong>Getting There</strong></p>
+<p>To edit Partify&#8217;s configuration, you must be logged in to a Partify user account that has administrator configuration modification privileges. If you have just installed Partify, you will get these rights when you register (provided you are the first user to register; subsequent users do not get administrative permissions by default). Once you are logged in, click the &#8220;admin&#8221; link at the top of any page. You will be taken to a page with, among other things, a section that is title &#8220;Configuration&#8221;. It is in this section that you will want to make the relevant changes.</p>
+<div class="section" id="stuff-you-ll-need-to-change">
+<h2>Stuff You&#8217;ll Need to Change<a class="headerlink" href="#stuff-you-ll-need-to-change" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>MPD Server Hostname</strong> - If you aren&#8217;t sure what to set this to and just installed Partify <a class="reference internal" href="installation.html#user-manual-installation-easy-way"><em>The Easy Way</em></a>, simply enter <tt class="docutils literal"><span class="pre">localhost</span></tt></li>
+<li><strong>MPD Server Port</strong> - If you aren&#8217;t sure what to set this to and just installed Partify <a class="reference internal" href="installation.html#user-manual-installation-easy-way"><em>The Easy Way</em></a>, simply enter <tt class="docutils literal"><span class="pre">6600</span></tt></li>
+<li><strong>Underlying Server Software</strong> - Set this to <tt class="docutils literal"><span class="pre">Tornado</span></tt></li>
+</ul>
+</div>
+<div class="section" id="stuff-you-might-want-to-change">
+<h2>Stuff You Might Want to Change<a class="headerlink" href="#stuff-you-might-want-to-change" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Port to Listen to On</strong> - Set this to <tt class="docutils literal"><span class="pre">80</span></tt> if you want to be able to access your Partify installation by simply going to <a class="reference external" href="http://server">http://server</a> instead of <a class="reference external" href="http://server:5000">http://server:5000</a></li>
+<li><strong>Last.fm API Key</strong> - Needed for retrieving images of the currently playing artist. Can be obtained from <a class="reference external" href="http://www.last.fm/api/account">http://www.last.fm/api/account</a> . If you don&#8217;t have an API key from Last.fm, go ahead and apply for one. The application process is easy and will immediately approve you for a non-commercial account, which is all you need.</li>
+</ul>
+</div>
+<div class="section" id="stuff-you-shouldn-t-change">
+<h2>Stuff You Shouldn&#8217;t Change<a class="headerlink" href="#stuff-you-shouldn-t-change" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Hostname to Listen On</strong></li>
+</ul>
+</div>
+<div class="section" id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
+<p><strong>MPD Server Hostname</strong> - Tells Partify what hostname to find the Mopidy server on. Required for playing music (Partify does not play music, but relies on Mopidy to do so). Can be any valid hostname string.</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">localhost</span></tt></p>
+<p><strong>MPD Server Port</strong> - Tells Partify what port the Mopidy server is listening on. Can be an integer from 1-65535. Note that ports 1-1024 are &#8220;well known&#8221; ports and require administrator privileges to bind to.</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">6600</span></tt></p>
+<p><strong>Underlying Server Software</strong> - Specifies what web server technology should be used to serve Partify. Can be either <tt class="docutils literal"><span class="pre">builtin</span> <span class="pre">debugging</span> <span class="pre">server</span></tt> or <tt class="docutils literal"><span class="pre">Tornado</span></tt>. <tt class="docutils literal"><span class="pre">Tornado</span></tt> should be used for best results as it is a mature web server technology. <tt class="docutils literal"><span class="pre">builtin</span> <span class="pre">debugging</span> <span class="pre">server</span></tt> can be useful for finding problems if you are developing for Partify.</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">tornado</span></tt></p>
+<p><strong>Hostname to Listen On</strong> - Specifies the hostname that Partify should listen on for incoming connections. <tt class="docutils literal"><span class="pre">0.0.0.0</span></tt> will listen for connections from other hosts, <tt class="docutils literal"><span class="pre">127.0.0.1</span></tt> will only listen for connections from the computer that is running Partify.</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">0.0.0.0</span></tt></p>
+<p><strong>Port to Listen On</strong> - Specifies the port that Partify should listen on for incoming connections.</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">5000</span></tt></p>
+<p><strong>Last.fm API Key</strong> - Specifies a Last.fm API key that can be used by the player to fetch content from Last.fm, like the now playing artist image. Can be obtained from <a class="reference external" href="http://www.last.fm/api/account">http://www.last.fm/api/account</a> .</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">&lt;blank&gt;</span></tt></p>
+<p><strong>Last.fm API Secret</strong> - Specifies a Last.fm API secret. The secret is not currently needed for anything, but may be useful in the future for writing information back to Last.fm, like scrobbling tracks or getting radio data. Can be obtained from <a class="reference external" href="http://www.last.fm/api/account">http://www.last.fm/api/account</a> .</p>
+<p><em>Default:</em> <tt class="docutils literal"><span class="pre">&lt;blank&gt;</span></tt></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="upgrading.html" title="Upgrading"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >User Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Fred Hatfull.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

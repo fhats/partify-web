@@ -99,7 +99,7 @@
 
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/statistics&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
 <div class="viewcode-block" id="statistics"><a class="viewcode-back" href="../../modules/statistics.html#partify.statistics.statistics">[docs]</a><span class="k">def</span> <span class="nf">statistics</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Provides some statistics about the :class:`PlayHistoryEntry`s in the database.</span>
+    <span class="sd">&quot;&quot;&quot;Provides some statistics about the :class:`partify.models.PlayHistoryEntry` in the database.</span>
 
 <span class="sd">    :returns: The status of the request, the time the statistics were generated, and the statistics.</span>
 <span class="sd">        The statistics are divided up into segments by time.</span>
@@ -138,8 +138,8 @@
     <span class="sd">&quot;&quot;&quot;Computes some statistics over a segment of history.</span>
 <span class="sd">    Note that this could be pretty slow to start. May be worth finding a way to speed this up eventually.</span>
 
-<span class="sd">    :param segment: A list of :class:`PlayHistoryEntry`s to compute statistics over.</span>
-<span class="sd">    :type segment: list of :class:`PlayHistoryEntry`s</span>
+<span class="sd">    :param segment: A list of :class:`partify.models.PlayHistoryEntry` to compute statistics over.</span>
+<span class="sd">    :type segment: list of :class:`partify.models.PlayHistoryEntry`</span>
 <span class="sd">    :returns: A dictionary of statistics for this segment.</span>
 <span class="sd">    :rtype: dictionary</span>
 <span class="sd">    &quot;&quot;&quot;</span>

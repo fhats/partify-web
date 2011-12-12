@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>API Reference &mdash; Partify 0.4 documentation</title>
+    <title>API Documentation &mdash; Partify 0.4 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Partify 0.4 documentation" href="../index.html" />
-    <link rel="next" title="Module Reference" href="../modules/index.html" />
-    <link rel="prev" title="Partify" href="../index.html" /> 
+    <link rel="next" title="Player" href="player.html" />
+    <link rel="prev" title="Upgrading" href="../user_manual/upgrading.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,22 +40,34 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../modules/index.html" title="Module Reference"
+          <a href="player.html" title="Player"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="Partify"
+          <a href="../user_manual/upgrading.html" title="Upgrading"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Documentation</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#concepts">Concepts</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../index.html"
-                        title="previous chapter">Partify</a></p>
+  <p class="topless"><a href="../user_manual/upgrading.html"
+                        title="previous chapter">Upgrading</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../modules/index.html"
-                        title="next chapter">Module Reference</a></p>
+  <p class="topless"><a href="player.html"
+                        title="next chapter">Player</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/index.txt"
@@ -82,11 +94,66 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="api-reference">
-<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Partify exposes an HTTP API that allows third-party software to interact with a Partify installation. This is useful for developing clients and
+services that interact with Partify.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Not all elements of Partify have been API&#8217;d yet. Full API completion is scheduled for the release of 0.5. See <a class="reference external" href="https://github.com/fxh32/partify/issues/88">https://github.com/fxh32/partify/issues/88</a> for more information</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The API has no versioning right now, and is therefore subject to change. Until versioning is implemented developers should be aware that endpoints may shift out from under them.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>All requests should be made over HTTP. Responses returned by API endpoints are all formatted as <a class="reference external" href="http://json.org">JSON</a> strings. Responses are returned as standard HTTP responses. If the
+HTTP status code is OK, the response will typically contain a <tt class="docutils literal"><span class="pre">status</span></tt> member in the root of the response, which indicates the status of the request. This can be either <tt class="docutils literal"><span class="pre">ok</span></tt> or <tt class="docutils literal"><span class="pre">error</span></tt>.
+If <tt class="docutils literal"><span class="pre">status</span></tt> is <tt class="docutils literal"><span class="pre">error</span></tt> then a <tt class="docutils literal"><span class="pre">message</span></tt> field will also exist in the root of the response describing the error that occurred. If <tt class="docutils literal"><span class="pre">status</span></tt> is OK, the rest of the response is dependent
+on the endpoint returning the response.</p>
+</div>
+<div class="section" id="concepts">
+<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
+<p>User queue vs global queue etc.</p>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="player.html">Player</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="player.html#getting-player-status">Getting Player Status</a></li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="queue.html">Queue Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#getting-the-global-queue">Getting the Global Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#getting-the-user-s-queue">Getting the User&#8217;s Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#adding-tracks-to-the-queue">Adding Tracks to the Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#reordering-the-user-s-queue">Reordering the User&#8217;s Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#removing-tracks-from-the-queue">Removing Tracks from the Queue</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="search.html">Search</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="search.html#searching-the-library">Searching the Library</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vote.html">Voting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vote.html#getting-the-user-s-vote-status">Getting the User&#8217;s Vote Status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vote.html#voting-a-track-up">Voting a Track Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vote.html#voting-a-track-down">Voting a Track Down</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vote.html#getting-the-vote-score-for-a-track">Getting the Vote Score for a Track</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="history.html#getting-the-track-play-history">Getting the Track Play History</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">Statistics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#getting-statistics">Getting Statistics</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -106,10 +173,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../modules/index.html" title="Module Reference"
+          <a href="player.html" title="Player"
              >next</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="Partify"
+          <a href="../user_manual/upgrading.html" title="Upgrading"
              >previous</a> |</li>
         <li><a href="../index.html">Partify 0.4 documentation</a> &raquo;</li> 
       </ul>

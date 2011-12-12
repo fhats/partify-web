@@ -125,7 +125,7 @@
 <span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
 <span class="sd">    :type mpd: ``MPDClient``</span>
 <span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
-<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    :type db_tracks: list of :class:`partify.models.PlayQueueEntry`</span>
 <span class="sd">    :param user_list: A list of users reflecting the order in which their tracks should be played</span>
 <span class="sd">    :type user_list: list of :class:`User`s</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -162,7 +162,7 @@
 <span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
 <span class="sd">    :type mpd: ``MPDClient``</span>
 <span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
-<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    :type db_tracks: list of :class:`partify.models.PlayQueueEntry`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c"># First, grab a list of all users that currently have PlayQueueEntrys (we can interpret this as active users)</span>
@@ -196,20 +196,20 @@
 <span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
 <span class="sd">    :type mpd: ``MPDClient``</span>
 <span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
-<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    :type db_tracks: list of :class:`partify.models.PlayQueueEntry`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">user_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">pqe</span><span class="o">.</span><span class="n">user</span> <span class="k">for</span> <span class="n">pqe</span> <span class="ow">in</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">time_added</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()]</span>
 
     <span class="n">_match_tracks_with_users</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">,</span> <span class="n">user_list</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="first_come_first_served_with_voting"><a class="viewcode-back" href="../../modules/selection.html#partify.selection.first_come_first_served_with_voting">[docs]</a><span class="k">def</span> <span class="nf">first_come_first_served_with_voting</span><span class="p">(</span><span class="n">mpd</span><span class="p">,</span> <span class="n">db_tracks</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;First-come first-served with voting. Sorts the :class:`PlayQueueEntry`s in the database and shuffles</span>
+    <span class="sd">&quot;&quot;&quot;First-come first-served with voting. Sorts the :class:`partify.models.PlayQueueEntry` in the database and shuffles</span>
 <span class="sd">    tracks until their order matches the correct DB ordering.</span>
 
 <span class="sd">    :param mpd: An MPD client to use to manipulate the MPD list</span>
 <span class="sd">    :type mpd: ``MPDClient``</span>
 <span class="sd">    :param db_tracks: A list of tracks in the database to be compared against</span>
-<span class="sd">    :type db_tracks: list of :class:`PlayQueueEntry`s</span>
+<span class="sd">    :type db_tracks: list of :class:`partify.models.PlayQueueEntry`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># TODO: replace this with a nice SQLAlchemy query</span>
     <span class="k">def</span> <span class="nf">sort_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>

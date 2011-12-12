@@ -126,7 +126,7 @@
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/player/status/poll&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
 <span class="nd">@with_authentication</span>
 <span class="nd">@with_mpd</span>
-<div class="viewcode-block" id="status"><a class="viewcode-back" href="../../modules/player.html#partify.player.status">[docs]</a><span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
+<div class="viewcode-block" id="status"><a class="viewcode-back" href="../../api/player.html#partify.player.status">[docs]</a><span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="n">mpd</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An endpoint for poll-based player status updates.</span>
 
 <span class="sd">    :param current: The timestamp in seconds of the last time the client got a playlist update.</span>
@@ -176,7 +176,7 @@
 <div class="viewcode-block" id="get_global_queue"><a class="viewcode-back" href="../../modules/player.html#partify.player.get_global_queue">[docs]</a><span class="k">def</span> <span class="nf">get_global_queue</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;A convenience function for retrieving the global play queue.</span>
 
-<span class="sd">    :returns: A list of :class:`PlayQueueEntry`s in their dictionary representation.</span>
+<span class="sd">    :returns: A list of :class:`partify.models.PlayQueueEntry` in their dictionary representation.</span>
 <span class="sd">    :rtype: list of dicts</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db_queue</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">playback_priority</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -185,7 +185,7 @@
 <div class="viewcode-block" id="get_user_queue"><a class="viewcode-back" href="../../modules/player.html#partify.player.get_user_queue">[docs]</a><span class="k">def</span> <span class="nf">get_user_queue</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A convenience function for getting a specific user&#39;s queue.</span>
 
-<span class="sd">    :returns: A list of :class:PlayQueueEntry`s in their dictionary representation.</span>
+<span class="sd">    :returns: A list of :class:`partify.models.PlayQueueEntry` in their dictionary representation.</span>
 <span class="sd">    :rtype: list of dicts</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db_queue</span> <span class="o">=</span> <span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">PlayQueueEntry</span><span class="o">.</span><span class="n">user_priority</span><span class="p">)</span>
